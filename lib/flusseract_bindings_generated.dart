@@ -27,44 +27,341 @@ class FlusseractBindings {
           lookup)
       : _lookup = lookup;
 
-  /// A very short-lived native function.
-  ///
-  /// For very short-lived functions, it is fine to call them on the main isolate.
-  /// They will block the Dart execution while running the native function, so
-  /// only do this for native functions which are guaranteed to be short-lived.
-  int sum(
-    int a,
-    int b,
+  tess_api_ptr_t Create() {
+    return _Create();
+  }
+
+  late final _CreatePtr =
+      _lookup<ffi.NativeFunction<tess_api_ptr_t Function()>>('Create');
+  late final _Create = _CreatePtr.asFunction<tess_api_ptr_t Function()>();
+
+  void Destroy(
+    tess_api_ptr_t arg0,
   ) {
-    return _sum(
-      a,
-      b,
+    return _Destroy(
+      arg0,
     );
   }
 
-  late final _sumPtr =
-      _lookup<ffi.NativeFunction<ffi.IntPtr Function(ffi.IntPtr, ffi.IntPtr)>>(
-          'sum');
-  late final _sum = _sumPtr.asFunction<int Function(int, int)>();
+  late final _DestroyPtr =
+      _lookup<ffi.NativeFunction<ffi.Void Function(tess_api_ptr_t)>>('Destroy');
+  late final _Destroy = _DestroyPtr.asFunction<void Function(tess_api_ptr_t)>();
 
-  /// A longer lived native function, which occupies the thread calling it.
-  ///
-  /// Do not call these kind of native functions in the main isolate. They will
-  /// block Dart execution. This will cause dropped frames in Flutter applications.
-  /// Instead, call these native functions on a separate isolate.
-  int sum_long_running(
-    int a,
-    int b,
+  ffi.Pointer<ffi.Char> Version(
+    tess_api_ptr_t arg0,
   ) {
-    return _sum_long_running(
-      a,
-      b,
+    return _Version(
+      arg0,
     );
   }
 
-  late final _sum_long_runningPtr =
-      _lookup<ffi.NativeFunction<ffi.IntPtr Function(ffi.IntPtr, ffi.IntPtr)>>(
-          'sum_long_running');
-  late final _sum_long_running =
-      _sum_long_runningPtr.asFunction<int Function(int, int)>();
+  late final _VersionPtr = _lookup<
+          ffi.NativeFunction<ffi.Pointer<ffi.Char> Function(tess_api_ptr_t)>>(
+      'Version');
+  late final _Version =
+      _VersionPtr.asFunction<ffi.Pointer<ffi.Char> Function(tess_api_ptr_t)>();
+
+  ffi.Pointer<ffi.Char> GetDataPath() {
+    return _GetDataPath();
+  }
+
+  late final _GetDataPathPtr =
+      _lookup<ffi.NativeFunction<ffi.Pointer<ffi.Char> Function()>>(
+          'GetDataPath');
+  late final _GetDataPath =
+      _GetDataPathPtr.asFunction<ffi.Pointer<ffi.Char> Function()>();
+
+  int Init(
+    tess_api_ptr_t arg0,
+    ffi.Pointer<ffi.Char> arg1,
+    ffi.Pointer<ffi.Char> arg2,
+    ffi.Pointer<ffi.Char> arg3,
+    ffi.Pointer<ffi.Char> arg4,
+  ) {
+    return _Init(
+      arg0,
+      arg1,
+      arg2,
+      arg3,
+      arg4,
+    );
+  }
+
+  late final _InitPtr = _lookup<
+      ffi.NativeFunction<
+          ffi.Int Function(
+              tess_api_ptr_t,
+              ffi.Pointer<ffi.Char>,
+              ffi.Pointer<ffi.Char>,
+              ffi.Pointer<ffi.Char>,
+              ffi.Pointer<ffi.Char>)>>('Init');
+  late final _Init = _InitPtr.asFunction<
+      int Function(tess_api_ptr_t, ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>,
+          ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>)>();
+
+  void Clear(
+    tess_api_ptr_t arg0,
+  ) {
+    return _Clear(
+      arg0,
+    );
+  }
+
+  late final _ClearPtr =
+      _lookup<ffi.NativeFunction<ffi.Void Function(tess_api_ptr_t)>>('Clear');
+  late final _Clear = _ClearPtr.asFunction<void Function(tess_api_ptr_t)>();
+
+  void ClearPersistentCache(
+    tess_api_ptr_t arg0,
+  ) {
+    return _ClearPersistentCache(
+      arg0,
+    );
+  }
+
+  late final _ClearPersistentCachePtr =
+      _lookup<ffi.NativeFunction<ffi.Void Function(tess_api_ptr_t)>>(
+          'ClearPersistentCache');
+  late final _ClearPersistentCache =
+      _ClearPersistentCachePtr.asFunction<void Function(tess_api_ptr_t)>();
+
+  int GetPageSegMode(
+    tess_api_ptr_t arg0,
+  ) {
+    return _GetPageSegMode(
+      arg0,
+    );
+  }
+
+  late final _GetPageSegModePtr =
+      _lookup<ffi.NativeFunction<ffi.Int Function(tess_api_ptr_t)>>(
+          'GetPageSegMode');
+  late final _GetPageSegMode =
+      _GetPageSegModePtr.asFunction<int Function(tess_api_ptr_t)>();
+
+  void SetPageSegMode(
+    tess_api_ptr_t arg0,
+    int arg1,
+  ) {
+    return _SetPageSegMode(
+      arg0,
+      arg1,
+    );
+  }
+
+  late final _SetPageSegModePtr =
+      _lookup<ffi.NativeFunction<ffi.Void Function(tess_api_ptr_t, ffi.Int)>>(
+          'SetPageSegMode');
+  late final _SetPageSegMode =
+      _SetPageSegModePtr.asFunction<void Function(tess_api_ptr_t, int)>();
+
+  bool SetVariable(
+    tess_api_ptr_t arg0,
+    ffi.Pointer<ffi.Char> arg1,
+    ffi.Pointer<ffi.Char> arg2,
+  ) {
+    return _SetVariable(
+      arg0,
+      arg1,
+      arg2,
+    );
+  }
+
+  late final _SetVariablePtr = _lookup<
+      ffi.NativeFunction<
+          ffi.Bool Function(tess_api_ptr_t, ffi.Pointer<ffi.Char>,
+              ffi.Pointer<ffi.Char>)>>('SetVariable');
+  late final _SetVariable = _SetVariablePtr.asFunction<
+      bool Function(
+          tess_api_ptr_t, ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>)>();
+
+  void SetPixImage(
+    tess_api_ptr_t arg0,
+    pix_image_ptr_t arg1,
+  ) {
+    return _SetPixImage(
+      arg0,
+      arg1,
+    );
+  }
+
+  late final _SetPixImagePtr = _lookup<
+      ffi.NativeFunction<
+          ffi.Void Function(tess_api_ptr_t, pix_image_ptr_t)>>('SetPixImage');
+  late final _SetPixImage = _SetPixImagePtr.asFunction<
+      void Function(tess_api_ptr_t, pix_image_ptr_t)>();
+
+  ffi.Pointer<ffi.Char> UTF8Text(
+    tess_api_ptr_t arg0,
+  ) {
+    return _UTF8Text(
+      arg0,
+    );
+  }
+
+  late final _UTF8TextPtr = _lookup<
+          ffi.NativeFunction<ffi.Pointer<ffi.Char> Function(tess_api_ptr_t)>>(
+      'UTF8Text');
+  late final _UTF8Text =
+      _UTF8TextPtr.asFunction<ffi.Pointer<ffi.Char> Function(tess_api_ptr_t)>();
+
+  ffi.Pointer<ffi.Char> HOCRText(
+    tess_api_ptr_t arg0,
+  ) {
+    return _HOCRText(
+      arg0,
+    );
+  }
+
+  late final _HOCRTextPtr = _lookup<
+          ffi.NativeFunction<ffi.Pointer<ffi.Char> Function(tess_api_ptr_t)>>(
+      'HOCRText');
+  late final _HOCRText =
+      _HOCRTextPtr.asFunction<ffi.Pointer<ffi.Char> Function(tess_api_ptr_t)>();
+
+  ffi.Pointer<bounding_boxes> GetBoundingBoxes(
+    tess_api_ptr_t arg0,
+    int arg1,
+  ) {
+    return _GetBoundingBoxes(
+      arg0,
+      arg1,
+    );
+  }
+
+  late final _GetBoundingBoxesPtr = _lookup<
+      ffi.NativeFunction<
+          ffi.Pointer<bounding_boxes> Function(
+              tess_api_ptr_t, ffi.Int)>>('GetBoundingBoxes');
+  late final _GetBoundingBoxes = _GetBoundingBoxesPtr.asFunction<
+      ffi.Pointer<bounding_boxes> Function(tess_api_ptr_t, int)>();
+
+  ffi.Pointer<bounding_boxes> GetBoundingBoxesVerbose(
+    tess_api_ptr_t arg0,
+  ) {
+    return _GetBoundingBoxesVerbose(
+      arg0,
+    );
+  }
+
+  late final _GetBoundingBoxesVerbosePtr = _lookup<
+      ffi.NativeFunction<
+          ffi.Pointer<bounding_boxes> Function(
+              tess_api_ptr_t)>>('GetBoundingBoxesVerbose');
+  late final _GetBoundingBoxesVerbose = _GetBoundingBoxesVerbosePtr.asFunction<
+      ffi.Pointer<bounding_boxes> Function(tess_api_ptr_t)>();
+
+  pix_image_ptr_t CreatePixImageByFilePath(
+    ffi.Pointer<ffi.Char> arg0,
+  ) {
+    return _CreatePixImageByFilePath(
+      arg0,
+    );
+  }
+
+  late final _CreatePixImageByFilePathPtr = _lookup<
+          ffi.NativeFunction<pix_image_ptr_t Function(ffi.Pointer<ffi.Char>)>>(
+      'CreatePixImageByFilePath');
+  late final _CreatePixImageByFilePath = _CreatePixImageByFilePathPtr
+      .asFunction<pix_image_ptr_t Function(ffi.Pointer<ffi.Char>)>();
+
+  pix_image_ptr_t CreatePixImageFromBytes(
+    ffi.Pointer<ffi.Uint8> arg0,
+    int arg1,
+  ) {
+    return _CreatePixImageFromBytes(
+      arg0,
+      arg1,
+    );
+  }
+
+  late final _CreatePixImageFromBytesPtr = _lookup<
+      ffi.NativeFunction<
+          pix_image_ptr_t Function(
+              ffi.Pointer<ffi.Uint8>, ffi.Int)>>('CreatePixImageFromBytes');
+  late final _CreatePixImageFromBytes = _CreatePixImageFromBytesPtr.asFunction<
+      pix_image_ptr_t Function(ffi.Pointer<ffi.Uint8>, int)>();
+
+  int GetPixImageWidth(
+    pix_image_ptr_t arg0,
+  ) {
+    return _GetPixImageWidth(
+      arg0,
+    );
+  }
+
+  late final _GetPixImageWidthPtr =
+      _lookup<ffi.NativeFunction<ffi.Int32 Function(pix_image_ptr_t)>>(
+          'GetPixImageWidth');
+  late final _GetPixImageWidth =
+      _GetPixImageWidthPtr.asFunction<int Function(pix_image_ptr_t)>();
+
+  int GetPixImageHeight(
+    pix_image_ptr_t arg0,
+  ) {
+    return _GetPixImageHeight(
+      arg0,
+    );
+  }
+
+  late final _GetPixImageHeightPtr =
+      _lookup<ffi.NativeFunction<ffi.Int32 Function(pix_image_ptr_t)>>(
+          'GetPixImageHeight');
+  late final _GetPixImageHeight =
+      _GetPixImageHeightPtr.asFunction<int Function(pix_image_ptr_t)>();
+
+  void DestroyPixImage(
+    pix_image_ptr_t arg0,
+  ) {
+    return _DestroyPixImage(
+      arg0,
+    );
+  }
+
+  late final _DestroyPixImagePtr =
+      _lookup<ffi.NativeFunction<ffi.Void Function(pix_image_ptr_t)>>(
+          'DestroyPixImage');
+  late final _DestroyPixImage =
+      _DestroyPixImagePtr.asFunction<void Function(pix_image_ptr_t)>();
 }
+
+final class bounding_box extends ffi.Struct {
+  @ffi.Int()
+  external int x1;
+
+  @ffi.Int()
+  external int y1;
+
+  @ffi.Int()
+  external int x2;
+
+  @ffi.Int()
+  external int y2;
+
+  external ffi.Pointer<ffi.Char> word;
+
+  @ffi.Float()
+  external double confidence;
+
+  @ffi.Int()
+  external int block_num;
+
+  @ffi.Int()
+  external int par_num;
+
+  @ffi.Int()
+  external int line_num;
+
+  @ffi.Int()
+  external int word_num;
+}
+
+final class bounding_boxes extends ffi.Struct {
+  @ffi.Int()
+  external int length;
+
+  external ffi.Pointer<bounding_box> boxes;
+}
+
+typedef tess_api_ptr_t = ffi.Pointer<ffi.Void>;
+typedef pix_image_ptr_t = ffi.Pointer<ffi.Void>;

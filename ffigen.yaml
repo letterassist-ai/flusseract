@@ -10,6 +10,7 @@ headers:
     - 'src/flusseract.h'
   include-directives:
     - 'src/flusseract.h'
+compiler-opts: '-Wno-nullability-completeness'
 preamble: |
   // ignore_for_file: always_specify_types
   // ignore_for_file: camel_case_types

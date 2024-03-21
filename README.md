@@ -1,6 +1,6 @@
 # Flusseract
 
-Flutter plugin for the [Tesseract OCR](https://tesseract-ocr.github.io/) C++ library. This plugin recreates the [gosseract](https://github.com/otiai10/gosseract) SDK as a Flutter FFI plugin.
+Flutter plugin for the [Tesseract OCR](https://tesseract-ocr.github.io/) C++ library. This plugin provides bindings to [Flutter](https://flutter.dev/) that are similar to that provided by the [gosseract](https://github.com/otiai10/gosseract) SDK for Golang.
 
 ## Getting Started
 

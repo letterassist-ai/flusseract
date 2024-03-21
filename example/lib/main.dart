@@ -21,8 +21,8 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    sumResult = flusseract.sum(1, 2);
-    sumAsyncResult = flusseract.sumAsync(3, 4);
+    // sumResult = flusseract.sum(1, 2);
+    // sumAsyncResult = flusseract.sumAsync(3, 4);
   }
 
   @override
