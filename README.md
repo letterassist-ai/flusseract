@@ -15,18 +15,25 @@ If you wish to [build Tessaract from source](https://tesseract-ocr.github.io/tes
 ```
 # Packages which are always needed.
 brew install \
+  nasm \
   automake \
   autoconf \
   libtool \
-  pkgconfig \
-  icu4c \
-  leptonica
-# Packages required for training tools.
-brew install pango
-# Optional packages for extra features.
-brew install libarchive
+  pkgconfig
+
 # Optional package for builds using g++.
 brew install gcc
+
+# Packages required for training tools.
+brew install pango
+
+# Build dependencoes.  
+brew install \
+  icu4c \
+  leptonica
+
+# Optional packages for extra features.
+brew install libarchive
 ```
 
 **Compile**

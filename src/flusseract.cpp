@@ -49,7 +49,7 @@ FFI_PLUGIN_EXPORT int Init(tess_api_ptr_t a, char* tessdataprefix, char* languag
     if (configfilepath != NULL) {
         char* configs[] = {configfilepath};
         int configs_size = 1;
-        ret = api->Init(tessdataprefix, languages, tesseract::OEM_DEFAULT, configs, configs_size, NULL, NULL, false);
+        ret = api->Init(tessdataprefix, languages, tesseract::OEM_LSTM_ONLY, configs, configs_size, NULL, NULL, false);
     } else {
         ret = api->Init(tessdataprefix, languages);
     }

@@ -3,6 +3,8 @@
 # the plugin to fail to compile for some customers of the plugin.
 cmake_minimum_required(VERSION 3.10)
 
+include(ExternalProject)
+
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
@@ -10,6 +12,13 @@ set(LIB flusseract)
 project(${LIB}_library LANGUAGES C CXX)
 
 get_filename_component(ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/.. ABSOLUTE)
+
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/libzstd)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/libjpeg)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/libpng)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/libtiff)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/leptonica)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/tesseract)
 
 file(GLOB C_SRCS   ${CMAKE_CURRENT_SOURCE_DIR}/*.c)
 file(GLOB CXX_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp)
@@ -67,6 +76,6 @@ add_custom_target(test
   WORKING_DIRECTORY ${ROOT_DIR}
   COMMAND ${CMAKE_COMMAND} -E make_directory ${ROOT_DIR}/${LIB}.framework
   COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_BINARY_DIR}/${SHARED_LIB_NAME} ${ROOT_DIR}/${LIB}.framework/${LIB}
-  COMMAND dart test ${ROOT_DIR}/test
+  COMMAND flutter test ${ROOT_DIR}/test
   COMMENT "Running ${LIB} plugin tests"
 )

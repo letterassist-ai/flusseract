@@ -1,5 +1,5 @@
 import 'dart:io';
-import 'package:test/test.dart';
+import 'package:flutter_test/flutter_test.dart';
 
 import 'package:ffi_helper_ab/ffi_helper.dart';
 import 'package:flusseract/flusseract.dart';
@@ -45,7 +45,7 @@ void main() {
     image.dispose();
   });
 
-  test('Creates PixImage from invalid file', () async {
+  test('Attempts to create a PixImage from invalid file', () async {
     expect(
       () => PixImage.fromFile(
         'test/data/images/invalid-image.png',
