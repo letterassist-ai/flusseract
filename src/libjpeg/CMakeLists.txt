@@ -56,7 +56,7 @@ externalproject_add(libjpeg-macosx-x86_64
 # Combined targets
 
 add_custom_target(libjpeg-iphoneos
-  COMMENT "Building library module for iOS devices and simulators"
+  COMMENT "Building single multi-arch library for iOS devices and simulators"
   COMMAND make libjpeg-iphoneos-arm64 libjpeg-iphonesimulator-x86_64
 )
 

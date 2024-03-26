@@ -56,7 +56,7 @@ externalproject_add(libzstd-macosx-x86_64
 # Combined targets
 
 add_custom_target(libzstd-iphoneos
-  COMMENT "Building library module for iOS devices and simulators"
+  COMMENT "Building single multi-arch library for iOS devices and simulators"
   COMMAND make libzstd-iphoneos-arm64 libzstd-iphonesimulator-x86_64
 )
 

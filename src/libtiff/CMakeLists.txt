@@ -56,7 +56,7 @@ externalproject_add(libtiff-macosx-x86_64
 # Combined targets
 
 add_custom_target(libtiff-iphoneos
-  COMMENT "Building library module for iOS devices and simulators"
+  COMMENT "Building single multi-arch library for iOS devices and simulators"
   COMMAND make libtiff-iphoneos-arm64 libtiff-iphonesimulator-x86_64
 )
 add_dependencies(libtiff-iphoneos 

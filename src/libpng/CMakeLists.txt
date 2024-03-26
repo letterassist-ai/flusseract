@@ -60,7 +60,7 @@ externalproject_add(libpng-macosx-x86_64
 # Combined targets
 
 add_custom_target(libpng-iphoneos
-  COMMENT "Building library module for iOS devices and simulators"
+  COMMENT "Building single multi-arch library for iOS devices and simulators"
   COMMAND make libpng-iphoneos-arm64 libpng-iphonesimulator-x86_64
 )
 
