@@ -1,67 +1,55 @@
-# The Flutter tooling requires that developers have CMake 3.10 or later
-# installed. You should not increase this version, as doing so will cause
-# the plugin to fail to compile for some customers of the plugin.
-cmake_minimum_required(VERSION 3.10)
+# This cmake file builds makefiles for the leptonica library for iOS and macOSX
 
-include(ExternalProject)
+set(GIT_REPOSITORY https://github.com/DanBloomberg/leptonica.git)
+set(GIT_TAG        1.84.1)
+
+# android device arm64 architecture
+ext_build_library_from_git(
+  android armeabi-v7a android
+  ${GIT_REPOSITORY} ${GIT_TAG}
+)
+
+# android device arm64 architecture
+ext_build_library_from_git(
+  android arm64-v8a android
+  ${GIT_REPOSITORY} ${GIT_TAG}
+)
 
 # iOS device arm64 architecture
-externalproject_add(leptonica-iphoneos-arm64
-  GIT_REPOSITORY    https://github.com/DanBloomberg/leptonica.git
-  GIT_TAG           1.84.1
-  SOURCE_DIR        ${CMAKE_CURRENT_BINARY_DIR}/src
-  BINARY_DIR        ${CMAKE_CURRENT_BINARY_DIR}/iphoneos-arm64/build
-  INSTALL_DIR       ${CMAKE_CURRENT_BINARY_DIR}/../dist/iphoneos-arm64
-
-  PATCH_COMMAND     ${CMAKE_CURRENT_SOURCE_DIR}/patch.sh ${CMAKE_CURRENT_SOURCE_DIR} <SOURCE_DIR>
-
-  CONFIGURE_COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/cmake-apple.sh 
-                    iphoneos arm64 <SOURCE_DIR> <INSTALL_DIR>
+ext_build_library_from_git(
+  iphoneos arm64 darwin
+  ${GIT_REPOSITORY} ${GIT_TAG}
 )
 
 # iOS simulator x86_64 architecture
-externalproject_add(leptonica-iphonesimulator-x86_64
-  GIT_REPOSITORY    https://github.com/DanBloomberg/leptonica.git
-  GIT_TAG           1.84.1
-  SOURCE_DIR        ${CMAKE_CURRENT_BINARY_DIR}/src
-  BINARY_DIR        ${CMAKE_CURRENT_BINARY_DIR}/iphonesimulator-x86_64/build
-  INSTALL_DIR       ${CMAKE_CURRENT_BINARY_DIR}/../dist/iphonesimulator-x86_64
-
-  PATCH_COMMAND     ${CMAKE_CURRENT_SOURCE_DIR}/patch.sh ${CMAKE_CURRENT_SOURCE_DIR} <SOURCE_DIR>
-
-  CONFIGURE_COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/cmake-apple.sh 
-                    iphonesimulator x86_64 <SOURCE_DIR> <INSTALL_DIR>
+ext_build_library_from_git(
+  iphonesimulator x86_64 darwin
+  ${GIT_REPOSITORY} ${GIT_TAG}
 )
 
 # macOSX arm64 architecture
-externalproject_add(leptonica-macosx-arm64
-  GIT_REPOSITORY    https://github.com/DanBloomberg/leptonica.git
-  GIT_TAG           1.84.1
-  SOURCE_DIR        ${CMAKE_CURRENT_BINARY_DIR}/src
-  BINARY_DIR        ${CMAKE_CURRENT_BINARY_DIR}/macosx-arm64/build
-  INSTALL_DIR       ${CMAKE_CURRENT_BINARY_DIR}/../dist/macosx-arm64
-
-  PATCH_COMMAND     ${CMAKE_CURRENT_SOURCE_DIR}/patch.sh ${CMAKE_CURRENT_SOURCE_DIR} <SOURCE_DIR>
-
-  CONFIGURE_COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/cmake-apple.sh 
-                    macosx arm64 <SOURCE_DIR> <INSTALL_DIR>
+ext_build_library_from_git(
+  macosx arm64 darwin
+  ${GIT_REPOSITORY} ${GIT_TAG}
 )
 
 # macOSX x86_64 architecture
-externalproject_add(leptonica-macosx-x86_64
-  GIT_REPOSITORY    https://github.com/DanBloomberg/leptonica.git
-  GIT_TAG           1.84.1
-  SOURCE_DIR        ${CMAKE_CURRENT_BINARY_DIR}/src
-  BINARY_DIR        ${CMAKE_CURRENT_BINARY_DIR}/macosx-x86_64/build
-  INSTALL_DIR       ${CMAKE_CURRENT_BINARY_DIR}/../dist/macosx-x86_64
-
-  PATCH_COMMAND     ${CMAKE_CURRENT_SOURCE_DIR}/patch.sh ${CMAKE_CURRENT_SOURCE_DIR} <SOURCE_DIR>
-
-  CONFIGURE_COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/cmake-apple.sh 
-                    macosx x86_64 <SOURCE_DIR> <INSTALL_DIR>
+ext_build_library_from_git(
+  macosx x86_64 darwin
+  ${GIT_REPOSITORY} ${GIT_TAG}
 )
 
 # Combined targets
+
+add_custom_target(leptonica-android
+  COMMENT "Building library for Android devices and simulators"
+  COMMAND make leptonica-android-armeabi-v7a leptonica-android-arm64-v8a
+)
+add_dependencies(leptonica-android 
+  libjpeg-android 
+  libpng-android 
+  libtiff-android
+)
 
 add_custom_target(leptonica-iphoneos
   COMMENT "Building single multi-arch library for iOS devices and simulators"

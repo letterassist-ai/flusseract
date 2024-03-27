@@ -1,59 +1,54 @@
-# The Flutter tooling requires that developers have CMake 3.10 or later
-# installed. You should not increase this version, as doing so will cause
-# the plugin to fail to compile for some customers of the plugin.
-cmake_minimum_required(VERSION 3.10)
+# This cmake file builds makefiles for the libtiff library for iOS and macOSX
 
-include(ExternalProject)
+set(GIT_REPOSITORY https://gitlab.com/libtiff/libtiff.git)
+set(GIT_TAG        v4.6.0)
+
+# android device arm64 architecture
+ext_build_library_from_git(
+  android armeabi-v7a android
+  ${GIT_REPOSITORY} ${GIT_TAG}
+)
+
+# android device arm64 architecture
+ext_build_library_from_git(
+  android arm64-v8a android
+  ${GIT_REPOSITORY} ${GIT_TAG}
+)
 
 # iOS device arm64 architecture
-externalproject_add(libtiff-iphoneos-arm64
-  GIT_REPOSITORY    https://gitlab.com/libtiff/libtiff.git
-  GIT_TAG           v4.6.0
-  SOURCE_DIR        ${CMAKE_CURRENT_BINARY_DIR}/src
-  BINARY_DIR        ${CMAKE_CURRENT_BINARY_DIR}/iphoneos-arm64/build
-  INSTALL_DIR       ${CMAKE_CURRENT_BINARY_DIR}/../dist/iphoneos-arm64
-
-  CONFIGURE_COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/cmake-apple.sh 
-                    iphoneos arm64 <SOURCE_DIR> <INSTALL_DIR>
+ext_build_library_from_git(
+  iphoneos arm64 darwin
+  ${GIT_REPOSITORY} ${GIT_TAG}
 )
 
 # iOS simulator x86_64 architecture
-externalproject_add(libtiff-iphonesimulator-x86_64
-  GIT_REPOSITORY    https://gitlab.com/libtiff/libtiff.git
-  GIT_TAG           v4.6.0
-  SOURCE_DIR        ${CMAKE_CURRENT_BINARY_DIR}/src
-  BINARY_DIR        ${CMAKE_CURRENT_BINARY_DIR}/iphonesimulator-x86_64/build
-  INSTALL_DIR       ${CMAKE_CURRENT_BINARY_DIR}/../dist/iphonesimulator-x86_64
-
-  CONFIGURE_COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/cmake-apple.sh 
-                    iphonesimulator x86_64 <SOURCE_DIR> <INSTALL_DIR>
+ext_build_library_from_git(
+  iphonesimulator x86_64 darwin
+  ${GIT_REPOSITORY} ${GIT_TAG}
 )
 
 # macOSX arm64 architecture
-externalproject_add(libtiff-macosx-arm64
-  GIT_REPOSITORY    https://gitlab.com/libtiff/libtiff.git
-  GIT_TAG           v4.6.0
-  SOURCE_DIR        ${CMAKE_CURRENT_BINARY_DIR}/src
-  BINARY_DIR        ${CMAKE_CURRENT_BINARY_DIR}/macosx-arm64/build
-  INSTALL_DIR       ${CMAKE_CURRENT_BINARY_DIR}/../dist/macosx-arm64
-
-  CONFIGURE_COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/cmake-apple.sh 
-                    macosx arm64 <SOURCE_DIR> <INSTALL_DIR>
+ext_build_library_from_git(
+  macosx arm64 darwin
+  ${GIT_REPOSITORY} ${GIT_TAG}
 )
 
 # macOSX x86_64 architecture
-externalproject_add(libtiff-macosx-x86_64
-  GIT_REPOSITORY    https://gitlab.com/libtiff/libtiff.git
-  GIT_TAG           v4.6.0
-  SOURCE_DIR        ${CMAKE_CURRENT_BINARY_DIR}/src
-  BINARY_DIR        ${CMAKE_CURRENT_BINARY_DIR}/macosx-x86_64/build
-  INSTALL_DIR       ${CMAKE_CURRENT_BINARY_DIR}/../dist/macosx-x86_64
-
-  CONFIGURE_COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/cmake-apple.sh 
-                    macosx x86_64 <SOURCE_DIR> <INSTALL_DIR>
+ext_build_library_from_git(
+  macosx x86_64 darwin
+  ${GIT_REPOSITORY} ${GIT_TAG}
 )
 
 # Combined targets
+
+add_custom_target(libtiff-android
+  COMMENT "Building library for Android devices and simulators"
+  COMMAND make libtiff-android-armeabi-v7a libtiff-android-arm64-v8a
+)
+add_dependencies(libtiff-android
+  libzstd-android 
+  libjpeg-android
+)
 
 add_custom_target(libtiff-iphoneos
   COMMENT "Building single multi-arch library for iOS devices and simulators"
