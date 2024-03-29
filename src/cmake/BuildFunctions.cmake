@@ -29,6 +29,9 @@ function(ext_build_library_from_git SDK ARCH OSTYPE GIT_REPOSITORY GIT_TAG)
   set(LIB_FILE    "${CMAKE_BINARY_DIR}/dist/${SDK}-${ARCH}/lib/${LIB_NAME}.a")
   set(LIB_INCLUDE "${CMAKE_BINARY_DIR}/dist/${SDK}-${ARCH}/include")
 
+  file(MAKE_DIRECTORY ${LIB_DIR})
+  file(MAKE_DIRECTORY ${LIB_INCLUDE})
+
   set_property(GLOBAL PROPERTY "${TARGET}" "${LIB_FILE}")
   set_property(GLOBAL PROPERTY "${TARGET}_include" "${LIB_INCLUDE}")
 
@@ -77,6 +80,9 @@ function(ext_build_library_from_url SDK ARCH OSTYPE URL URL_HASH)
   set(LIB_FILE    "${CMAKE_BINARY_DIR}/dist/${SDK}-${ARCH}/lib/${LIB_NAME}.a")
   set(LIB_INCLUDE "${CMAKE_BINARY_DIR}/dist/${SDK}-${ARCH}/include")
 
+  file(MAKE_DIRECTORY ${LIB_DIR})
+  file(MAKE_DIRECTORY ${LIB_INCLUDE})
+  
   set_property(GLOBAL PROPERTY "${TARGET}" "${LIB_FILE}")
   set_property(GLOBAL PROPERTY "${TARGET}_include" "${LIB_INCLUDE}")
   
