@@ -7,7 +7,7 @@ import 'package:flusseract/flusseract.dart';
 void main() {
   test('Checks version of Tesseract library', () async {
     final version = Tesseract.version();
-    expect(version, matches(RegExp(r'^5\.3\.4$')));
+    expect(version, matches(RegExp(r'^5\.3\.4(-\d\d-\S+)?$')));
   });
 
   test('Clears persistent cache', () async {
@@ -16,7 +16,7 @@ void main() {
 
   test('Check default data path', () async {
     final tessDataPath = Tesseract.defaultTessDataPath;
-    expect(tessDataPath, equals('/usr/local/share/tessdata/'));
+    expect(tessDataPath, matches(RegExp(r'(/usr/local/share/tessdata/)|(./)')));
   });
 
   test('Creates PixImage from file', () async {

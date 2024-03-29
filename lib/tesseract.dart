@@ -259,11 +259,8 @@ class Tesseract extends ForeignInstanceStub {
   /// Returns the path to the Tesseract data directory.
   static get defaultTessDataPath {
     final path = bindings.flusseract.GetDataPath();
-    try {
-      return path.cast<Utf8>().toDartString();
-    } finally {
-      calloc.free(path);
-    }
+    // path is a pointer to a C++ string that is owned by Tesseract.
+    return path.cast<Utf8>().toDartString();
   }
 }
 
