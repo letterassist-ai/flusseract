@@ -3,7 +3,7 @@
 # Run `pod lib lint user.podspec` to validate before publishing.
 #
 
-build_go_source = <<-EOS
+build_tesseract_libs = <<-EOS
 !#/bin/bash
 
 plugin_root="$(cd -P $(dirname ${PODS_TARGET_SRCROOT}) && pwd)"
@@ -45,7 +45,7 @@ Flutter Tesseract OCR FFI plugin library.
 
   s.script_phase = { 
     :name => 'Build Flusseract Source', 
-    :script => build_go_source,
+    :script => build_tesseract_libs,
     :input_files => [
       '${PODS_TARGET_SRCROOT}/../src/**/*',
     ], 
