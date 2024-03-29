@@ -1,3 +1,3 @@
 // Relative import to be able to reuse the C sources.
 // See the comment in ../{projectName}}.podspec for more information.
-#include "../../src/flusseract.cpp"
+#include "../../src/flusseract.c"

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'dart:async';
 
 import 'package:flusseract/flusseract.dart' as flusseract;
 
@@ -15,13 +14,12 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  late int sumResult;
-  late Future<int> sumAsyncResult;
+  late String tessVersion;
 
   @override
   void initState() {
     super.initState();
-    // sumResult = flusseract.sum(1, 2);
+    tessVersion = flusseract.Tesseract.version;
     // sumAsyncResult = flusseract.sumAsync(3, 4);
   }
 
@@ -40,29 +38,15 @@ class _MyAppState extends State<MyApp> {
             child: Column(
               children: [
                 const Text(
-                  'This calls a native function through FFI that is shipped as source in the package. '
-                  'The native code is built as part of the Flutter Runner build.',
+                  'Flusseract OCR Plugin Test App.',
                   style: textStyle,
                   textAlign: TextAlign.center,
                 ),
                 spacerSmall,
                 Text(
-                  'sum(1, 2) = $sumResult',
+                  'Tesseract Version = $tessVersion',
                   style: textStyle,
                   textAlign: TextAlign.center,
-                ),
-                spacerSmall,
-                FutureBuilder<int>(
-                  future: sumAsyncResult,
-                  builder: (BuildContext context, AsyncSnapshot<int> value) {
-                    final displayValue =
-                        (value.hasData) ? value.data : 'loading';
-                    return Text(
-                      'await sumAsync(3, 4) = $displayValue',
-                      style: textStyle,
-                      textAlign: TextAlign.center,
-                    );
-                  },
                 ),
               ],
             ),

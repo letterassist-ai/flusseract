@@ -24,11 +24,21 @@ fi
 set -u
 
 SDK_PATH=`xcrun --sdk $SDK --show-sdk-path`
+SDK_VERSION=$(echo "$(basename ${SDK_PATH})" | awk -F'[a-zA-Z.]+' '{print $2 "." $3}')
+
 CLANG=`xcrun --sdk $SDK --find clang`
 CLANG_PLUSPLUS=`xcrun --sdk $SDK --find clang++`
 
 MIN_IPHONEOS_VERSION=11.0
 MIN_MACOSX_VERSION=10.13
+
+if [[ "$SDK" = "iphoneos" ]]; then
+  TARGET="-target ${ARCHITECTURE}-apple-ios${SDK_VERSION}"
+elif [[ "$SDK" = "iphonesimulator" ]]; then
+  TARGET="-target ${ARCHITECTURE}-apple-ios${SDK_VERSION}-simulator"
+else
+  TARGET=""
+fi
 
 cat <<EOF >toolchain.cmake
 if(DARWIN_TOOLCHAIN_INCLUDED)

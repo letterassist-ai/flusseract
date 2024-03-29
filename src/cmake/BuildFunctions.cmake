@@ -9,7 +9,7 @@ function(add_static_library_dependency LIB_NAME TARGET_TYPE)
   message(STATUS "Adding library dependency: ${LIB_NAME} (${LIB_PATH}) - ${LIB_NAME}-${TARGET_TYPE}")
 
   add_library(${LIB_NAME} STATIC IMPORTED GLOBAL)
-  add_dependencies(${LIB_NAME} ${LIB_NAME}-${TARGET_TYPE})
+  add_dependencies(${LIB_NAME} "${LIB_NAME}-${TARGET_TYPE}")
   set_target_properties(${LIB_NAME} 
     PROPERTIES
       IMPORTED_LOCATION ${LIB_PATH}
@@ -123,12 +123,12 @@ function(ext_build_library_from_url SDK ARCH OSTYPE URL URL_HASH)
 endfunction(ext_build_library_from_url)
 
 ##############################################
-# FUNCTION ext_create_multi_arch_library
+# FUNCTION ext_create_target_library
 ##############################################
-function(ext_create_multi_arch_library DEST_TYPE)
+function(ext_create_target_library TARGET_TYPE)
   get_filename_component(LIB_NAME "${CMAKE_CURRENT_SOURCE_DIR}" NAME)
-  set(TARGET "${LIB_NAME}-${DEST_TYPE}")
-  set(MULTI_ARCH_LIB "${CMAKE_BINARY_DIR}/dist/${DEST_TYPE}/lib/${LIB_NAME}.a")
+  set(TARGET "${LIB_NAME}-${TARGET_TYPE}")
+  set(TARGET_LIB "${CMAKE_BINARY_DIR}/dist/${TARGET_TYPE}/lib/${LIB_NAME}.a")
 
   message(STATUS "Creating multi-arch library target: ${TARGET}")
 
@@ -140,29 +140,54 @@ function(ext_create_multi_arch_library DEST_TYPE)
     set(SINGLE_ARCH_LIBS "${LIB_FILE} ${SINGLE_ARCH_LIBS}")
   endforeach()
 
-  set(LIPO_COMMAND "lipo ${SINGLE_ARCH_LIBS} -create -output ${MULTI_ARCH_LIB}")
-  list(GET DEPENDS 0 COPY_INCLUDE_FROM)
+  list(LENGTH DEPENDS NUM_DEPENDS)
+  list(GET DEPENDS 0 FIRST_DEPENDS)
 
-  add_custom_command(
-    OUTPUT ${MULTI_ARCH_LIB}
-    COMMENT "Building multi-arch library module for ${DEST_TYPE}..."
-    BYPRODUCTS ${MULTI_ARCH_LIB}
-    DEPENDS ${DEPENDENCIES}
-    COMMAND sh -c ${LIPO_COMMAND}
-    COMMAND cp -r 
-      ${CMAKE_BINARY_DIR}/dist/${COPY_INCLUDE_FROM}/include/*
-      ${CMAKE_BINARY_DIR}/dist/${DEST_TYPE}/include/
-  )
+  if(${NUM_DEPENDS} GREATER 1)
+    # Create a multi-arch library using lipo
+
+    set(LIPO_COMMAND "lipo ${SINGLE_ARCH_LIBS} -create -output ${TARGET_LIB}")
+    add_custom_command(
+      OUTPUT ${TARGET_LIB}
+      COMMENT "Building multi-arch library module for ${TARGET_TYPE}..."
+      BYPRODUCTS ${TARGET_LIB}
+      DEPENDS ${DEPENDENCIES}
+      COMMAND sh -c ${LIPO_COMMAND}
+      COMMAND cp -r 
+        ${CMAKE_BINARY_DIR}/dist/${FIRST_DEPENDS}/include/*
+        ${CMAKE_BINARY_DIR}/dist/${TARGET_TYPE}/include/
+    )
+  else()
+    # Only single arch library, no need to create multi-arch library
+    # Simply copy the single arch library to the target library directory
+    list(GET FIRST_DEPENDENCY 0 DEPENDENCIES)
+
+    add_custom_command(
+      OUTPUT ${TARGET_LIB}
+      COMMENT "Building multi-arch library module for ${TARGET_TYPE}..."
+      BYPRODUCTS ${TARGET_LIB}
+      DEPENDS ${DEPENDENCIES}
+      COMMAND cp
+        ${FIRST_DEPENDENCY}
+        ${CMAKE_BINARY_DIR}/dist/${TARGET_TYPE}/lib/
+      COMMAND cp -r 
+        ${CMAKE_BINARY_DIR}/dist/${FIRST_DEPENDS}/include/*
+        ${CMAKE_BINARY_DIR}/dist/${TARGET_TYPE}/include/
+    )
+
+  endif()
+
   add_custom_target("${TARGET}"
-    DEPENDS ${MULTI_ARCH_LIB}
+    DEPENDS ${TARGET_LIB}
   )
 
-endfunction(ext_create_multi_arch_library)
+endfunction(ext_create_target_library)
 
-## Apple iOS and MacOSX multi-arch library build output directories
+## Apple platform target library build output directories
 
-file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/dist/ios/lib)
-file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/dist/ios/include)
-
-file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/dist/macos/lib)
-file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/dist/macos/include)
+file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/dist/iphoneos/lib)
+file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/dist/iphoneos/include)
+file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/dist/iphonesimulator/lib)
+file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/dist/iphonesimulator/include)
+file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/dist/macosx/lib)
+file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/dist/macosx/include)

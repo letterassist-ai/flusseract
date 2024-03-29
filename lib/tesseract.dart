@@ -230,18 +230,6 @@ class Tesseract extends ForeignInstanceStub {
     }
   }
 
-  /// Returns the version of the Tesseract library.
-  static String version() {
-    final tesseract = Tesseract();
-    try {
-      final v = bindings.flusseract.Version(tesseract.handle);
-      final version = v.cast<Utf8>().toDartString();
-      return version;
-    } finally {
-      tesseract.dispose();
-    }
-  }
-
   /// Clears any library-level memory caches. There are a variety
   /// of expensive-to-load constant data structures (mostly language
   /// dictionaries) that are cached globally – surviving the Init()
@@ -261,6 +249,18 @@ class Tesseract extends ForeignInstanceStub {
     final path = bindings.flusseract.GetDataPath();
     // path is a pointer to a C++ string that is owned by Tesseract.
     return path.cast<Utf8>().toDartString();
+  }
+
+  /// Returns the version of the Tesseract library.
+  static get version {
+    final tesseract = Tesseract();
+    try {
+      final v = bindings.flusseract.Version(tesseract.handle);
+      final version = v.cast<Utf8>().toDartString();
+      return version;
+    } finally {
+      tesseract.dispose();
+    }
   }
 }
 

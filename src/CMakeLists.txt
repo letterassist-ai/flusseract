@@ -39,9 +39,9 @@ if(DEFINED ANDROID_ABI)
   set(TARGET_TYPE "android-${ANDROID_ABI}")
   message(STATUS "Building for Android using NDK toolchain - ${TARGET_TYPE}")
   
-elseif(DEFINED ENV{SWIFT_PLATFORM_TARGET_PREFIX})
+elseif(DEFINED ENV{PLATFORM_NAME})
   # Apple builds using the Swift toolchain
-  set(TARGET_TYPE "$ENV{SWIFT_PLATFORM_TARGET_PREFIX}")
+  set(TARGET_TYPE "$ENV{PLATFORM_NAME}")
   message(STATUS "Building for Apple Darwin using the Swift toolchain - ${TARGET_TYPE}")
   
 else()

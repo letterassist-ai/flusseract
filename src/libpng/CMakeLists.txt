@@ -20,17 +20,26 @@ ext_build_library_from_url(
   iphoneos arm64 darwin
   ${URL} ${URL_HASH}
 )
+ext_create_target_library(
+  iphoneos
+  "iphoneos-arm64"
+)
 
+# iOS simulator arm64 architecture
+ext_build_library_from_url(
+  iphonesimulator arm64 darwin
+  ${URL} ${URL_HASH}
+  ${DEPENDS}
+)
 # iOS simulator x86_64 architecture
 ext_build_library_from_url(
   iphonesimulator x86_64 darwin
   ${URL} ${URL_HASH}
 )
-
 # Create multi-arch library for iOS
-ext_create_multi_arch_library(
-  ios
-  "iphoneos-arm64;iphonesimulator-x86_64"
+ext_create_target_library(
+  iphonesimulator
+  "iphonesimulator-arm64;iphonesimulator-x86_64"
 )
 
 # macOSX arm64 architecture
@@ -38,15 +47,13 @@ ext_build_library_from_url(
   macosx arm64 darwin
   ${URL} ${URL_HASH}
 )
-
 # macOSX x86_64 architecture
 ext_build_library_from_url(
   macosx x86_64 darwin
   ${URL} ${URL_HASH}
 )
-
 # Create multi-arch library for macOSX
-ext_create_multi_arch_library(
-  macos
+ext_create_target_library(
+  macosx
   "macosx-arm64;macosx-x86_64"
 )
