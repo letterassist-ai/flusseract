@@ -7,7 +7,7 @@ import 'package:flusseract/flusseract.dart';
 void main() {
   test('Checks version of Tesseract library', () async {
     final version = Tesseract.version();
-    expect(version, matches(RegExp(r'^5\.3\.4-\d\d-\S+$')));
+    expect(version, matches(RegExp(r'^5\.3\.4$')));
   });
 
   test('Clears persistent cache', () async {

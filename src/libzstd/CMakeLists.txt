@@ -27,6 +27,12 @@ ext_build_library_from_git(
   ${GIT_REPOSITORY} ${GIT_TAG}
 )
 
+# Create multi-arch library for iOS
+ext_create_multi_arch_library(
+  ios
+  "iphoneos-arm64;iphonesimulator-x86_64"
+)
+
 # macOSX arm64 architecture
 ext_build_library_from_git(
   macosx arm64 darwin
@@ -39,19 +45,8 @@ ext_build_library_from_git(
   ${GIT_REPOSITORY} ${GIT_TAG}
 )
 
-# Combined targets
-
-add_custom_target(libzstd-android
-  COMMENT "Building library for Android devices and simulators"
-  COMMAND make libzstd-android-armeabi-v7a libzstd-android-arm64-v8a
-)
-
-add_custom_target(libzstd-iphoneos
-  COMMENT "Building single multi-arch library for iOS devices and simulators"
-  COMMAND make libzstd-iphoneos-arm64 libzstd-iphonesimulator-x86_64
-)
-
-add_custom_target(libzstd-macosx
-  COMMENT "Building single multi-arch library module for macOSX"
-  COMMAND make libzstd-macosx-arm64 libzstd-macosx-x86_64
+# Create multi-arch library for macOSX
+ext_create_multi_arch_library(
+  macos
+  "macosx-arm64;macosx-x86_64"
 )

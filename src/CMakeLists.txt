@@ -12,46 +12,94 @@ set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 set(LIB flusseract)
+
 project(${LIB}_library LANGUAGES C CXX)
 
 get_filename_component(ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/.. ABSOLUTE)
 
+# External libraries and builds
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/libzstd)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/libjpeg)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/libpng)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/libtiff)
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/leptonica)
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/tesseract)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/libleptonica)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/libtesseract)
 
+# Source files
 file(GLOB C_SRCS   ${CMAKE_CURRENT_SOURCE_DIR}/*.c)
 file(GLOB CXX_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp)
 
+# Flusseract library build
 add_library(${LIB} SHARED ${C_SRCS} ${CXX_SRCS})
 add_compile_options(-Wno-unused-result)
 
-if(DEFINED ENV{SWIFT_PLATFORM_TARGET_PREFIX})
+# # Tesseract library build
+if(DEFINED ANDROID_ABI)
+  # Android builds using the NDK
+  set(TARGET_TYPE ${ANDROID_ABI})
+  message(STATUS "Building for Apple Darwin using the Swift toolchain - ${TARGET_TYPE}")
+  
+elseif(DEFINED ENV{SWIFT_PLATFORM_TARGET_PREFIX})
   # Apple builds using the Swift toolchain
+  set(TARGET_TYPE $ENV{SWIFT_PLATFORM_TARGET_PREFIX})
+  message(STATUS "Building for Apple Darwin using the Swift toolchain - ${TARGET_TYPE}")
+  
+else()
 
-  # The install location for homebrew packages on Apple environments
-  set(APPLEOS_BREW_PREFIX /opt/homebrew)
+  if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+    set(LIB_SEARCH_PATHS "/usr/local/lib;/opt/homebrew/lib")
+    set(INCLUDE_PATHS "/usr/local/include;/opt/homebrew/include")
+  else()
+    set(LIB_SEARCH_PATHS "/usr/local/lib")
+    set(INCLUDE_PATHS "/usr/local/include")
+  endif()
 
   # Find the leptonica library
   find_library(LEPTONICA_LIBRARY
     NAMES leptonica
-    PATHS /opt/homebrew/lib /usr/local/lib)
-
+    PATHS ${LIB_SEARCH_PATHS})
   # Find the tesseract library
   find_library(TESSERACT_LIBRARY
     NAMES tesseract
-    PATHS /opt/homebrew/lib /usr/local/lib)
+    PATHS ${LIB_SEARCH_PATHS})
 
-  target_include_directories(${LIB} PUBLIC /usr/local/include ${APPLEOS_BREW_PREFIX}/include)
   target_link_libraries(${LIB} ${LEPTONICA_LIBRARY} ${TESSERACT_LIBRARY})
+  target_include_directories(${LIB} PUBLIC ${INCLUDE_PATHS})
+endif()
 
-elseif(DEFINED ANDROID_ABI)
-  # Android builds using the NDK
-else()
-  # Multi-platform go build for platforms other than Apple and Android
+if(DEFINED TARGET_TYPE)
+  
+  find_package(LibLZMA)
+  if(NOT LIBLZMA_FOUND)
+    message(FATAL_ERROR "liblzma not found")
+  endif()
+  find_package(ZLIB)
+  if(NOT ZLIB_FOUND)
+    message(FATAL_ERROR "zlib not found")
+  endif()
+
+  message(STATUS "LIBLZMA_FOUND: ${LIBLZMA_FOUND} - ${LIBLZMA_LIBRARIES}")
+  message(STATUS "ZLIB_FOUND: ${ZLIB_FOUND} - ${ZLIB_LIBRARIES}")
+
+  # Library dependencies
+  add_static_library_dependency(libzstd ${TARGET_TYPE})
+  add_static_library_dependency(libjpeg ${TARGET_TYPE})
+  add_static_library_dependency(libpng ${TARGET_TYPE})
+  add_static_library_dependency(libtiff ${TARGET_TYPE})
+  add_static_library_dependency(libleptonica ${TARGET_TYPE})
+  add_static_library_dependency(libtesseract ${TARGET_TYPE})
+
+  target_link_libraries(${LIB} 
+    ${LIBLZMA_LIBRARIES}
+    ${ZLIB_LIBRARIES}
+    libzstd
+    libjpeg
+    libpng
+    libtiff
+    libleptonica
+    libtesseract
+  )
+
 endif()
 
 if(DEFINED ANDROID_ABI)

@@ -27,6 +27,12 @@ ext_build_library_from_url(
   ${URL} ${URL_HASH}
 )
 
+# Create multi-arch library for iOS
+ext_create_multi_arch_library(
+  ios
+  "iphoneos-arm64;iphonesimulator-x86_64"
+)
+
 # macOSX arm64 architecture
 ext_build_library_from_url(
   macosx arm64 darwin
@@ -39,19 +45,8 @@ ext_build_library_from_url(
   ${URL} ${URL_HASH}
 )
 
-# Combined targets
-
-add_custom_target(libpng-android
-  COMMENT "Building library for Android devices and simulators"
-  COMMAND make libpng-android-armeabi-v7a libpng-android-arm64-v8a
-)
-
-add_custom_target(libpng-iphoneos
-  COMMENT "Building single multi-arch library for iOS devices and simulators"
-  COMMAND make libpng-iphoneos-arm64 libpng-iphonesimulator-x86_64
-)
-
-add_custom_target(libpng-macosx
-  COMMENT "Building single multi-arch library module for macOSX"
-  COMMAND make libpng-macosx-arm64 libpng-macosx-x86_64
+# Create multi-arch library for macOSX
+ext_create_multi_arch_library(
+  macos
+  "macosx-arm64;macosx-x86_64"
 )
