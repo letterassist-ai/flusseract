@@ -69,16 +69,21 @@ endif()
 
 if(DEFINED TARGET_TYPE)
   
-  find_package(LibLZMA)
-  if(NOT LIBLZMA_FOUND)
-    message(FATAL_ERROR "liblzma not found")
+  # Android NDK does not have liblzma. So skip 
+  # it as other libraries will be built without 
+  # it and so we do not need to link it.
+  if(NOT DEFINED ANDROID_ABI)  
+    find_package(LibLZMA)
+    if(NOT LIBLZMA_FOUND)
+      message(FATAL_ERROR "liblzma not found")
+    endif()
+    message(STATUS "LIBLZMA_FOUND: ${LIBLZMA_FOUND} - ${LIBLZMA_LIBRARIES}")
   endif()
+
   find_package(ZLIB)
   if(NOT ZLIB_FOUND)
     message(FATAL_ERROR "zlib not found")
   endif()
-
-  message(STATUS "LIBLZMA_FOUND: ${LIBLZMA_FOUND} - ${LIBLZMA_LIBRARIES}")
   message(STATUS "ZLIB_FOUND: ${ZLIB_FOUND} - ${ZLIB_LIBRARIES}")
 
   # Library dependencies
