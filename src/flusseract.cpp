@@ -36,7 +36,7 @@ FFI_PLUGIN_EXPORT int Init(tess_api_ptr_t a, char* tessdataprefix, char* languag
     tesseract::TessBaseAPI* api = (tesseract::TessBaseAPI*)a;
 
     // {{{ Redirect STDERR to given buffer
-    int original_stderr;
+    int original_stderr = 0;
     if (errbuf != NULL) {
       fflush(stderr);
       original_stderr = dup(STDERR_FILENO);

@@ -323,6 +323,16 @@ class FlusseractBindings {
           'DestroyPixImage');
   late final _DestroyPixImage =
       _DestroyPixImagePtr.asFunction<void Function(pix_image_ptr_t)>();
+
+  ffi.Pointer<ffi.Char> PluginVersion() {
+    return _PluginVersion();
+  }
+
+  late final _PluginVersionPtr =
+      _lookup<ffi.NativeFunction<ffi.Pointer<ffi.Char> Function()>>(
+          'PluginVersion');
+  late final _PluginVersion =
+      _PluginVersionPtr.asFunction<ffi.Pointer<ffi.Char> Function()>();
 }
 
 final class bounding_box extends ffi.Struct {

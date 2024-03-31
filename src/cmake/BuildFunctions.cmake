@@ -61,7 +61,7 @@ function(ext_build_library_from_git SDK ARCH OSTYPE GIT_REPOSITORY GIT_TAG)
   
   add_custom_command(
     OUTPUT "${LIB_FILE}"
-    COMMENT "Building library ${LIB_NAME} using %{SDK} SDK..."
+    COMMENT "Building library ${LIB_NAME} using ${SDK} SDK..."
     COMMAND "${CMAKE_COMMAND}" --build "${CMAKE_BINARY_DIR}" --target "ext_${TARGET}"
     DEPENDS ${DEPENDENCIES}
   )
@@ -114,7 +114,7 @@ function(ext_build_library_from_url SDK ARCH OSTYPE URL URL_HASH)
   
   add_custom_command(
     OUTPUT "${CMAKE_BINARY_DIR}/dist/${SDK}-${ARCH}/lib/${LIB_NAME}.a"
-    COMMENT "Building library ${LIB_NAME} using %{SDK} SDK..."
+    COMMENT "Building library ${LIB_NAME} using ${SDK} SDK..."
     COMMAND "${CMAKE_COMMAND}" --build "${CMAKE_BINARY_DIR}" --target "ext_${TARGET}"
     DEPENDS ${DEPENDENCIES}
   )

@@ -25,30 +25,28 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    const textStyle = TextStyle(fontSize: 25);
-    const spacerSmall = SizedBox(height: 10);
+    final theme = Theme.of(context);
+
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: const Text('Native Packages'),
+          title: const Text('Flusseract OCR Plugin Test App'),
         ),
         body: SingleChildScrollView(
-          child: Container(
+          child: Padding(
             padding: const EdgeInsets.all(10),
-            child: Column(
-              children: [
-                const Text(
-                  'Flusseract OCR Plugin Test App.',
-                  style: textStyle,
-                  textAlign: TextAlign.center,
-                ),
-                spacerSmall,
-                Text(
-                  'Tesseract Version = $tessVersion',
-                  style: textStyle,
-                  textAlign: TextAlign.center,
-                ),
-              ],
+            child: Center(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  const SizedBox(height: 20),
+                  Text(
+                    'Tesseract Version = $tessVersion',
+                    style: theme.textTheme.bodyLarge,
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
             ),
           ),
         ),

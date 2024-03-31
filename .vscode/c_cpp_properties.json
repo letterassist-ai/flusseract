@@ -4,7 +4,8 @@
             "name": "Mac",
             "includePath": [
                 "${workspaceFolder}/**",
-                "/opt/homebrew/include"
+                "/opt/homebrew/include",
+                "${workspaceFolder}/build/dist/macosx/include"
             ],
             "defines": [],
             "macFrameworkPath": [

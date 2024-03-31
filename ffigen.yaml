@@ -9,7 +9,7 @@ headers:
   entry-points:
     - 'src/flusseract.h'
   include-directives:
-    - 'src/flusseract.h'
+    - 'src/**.h'
 compiler-opts: '-Wno-nullability-completeness'
 preamble: |
   // ignore_for_file: always_specify_types

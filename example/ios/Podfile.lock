@@ -1,0 +1,22 @@
+PODS:
+  - flusseract (0.0.1):
+    - Flutter
+  - Flutter (1.0.0)
+
+DEPENDENCIES:
+  - flusseract (from `.symlinks/plugins/flusseract/ios`)
+  - Flutter (from `Flutter`)
+
+EXTERNAL SOURCES:
+  flusseract:
+    :path: ".symlinks/plugins/flusseract/ios"
+  Flutter:
+    :path: Flutter
+
+SPEC CHECKSUMS:
+  flusseract: d4a97c47fb597e2672c03292d76d9453f44ce375
+  Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
+
+PODFILE CHECKSUM: 819463e6a0290f5a72f145ba7cde16e8b6ef0796
+
+COCOAPODS: 1.15.2
