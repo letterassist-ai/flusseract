@@ -14,13 +14,7 @@ env > ${plugin_build_dir}/env.log
 
 pushd ${plugin_build_dir}
 cmake ../src && \
-  make \
-    libzstd-${PLATFORM_NAME} \
-    libjpeg-${PLATFORM_NAME} \
-    libpng-${PLATFORM_NAME} \
-    libtiff-${PLATFORM_NAME} \
-    libleptonica-${PLATFORM_NAME} \
-    libtesseract-${PLATFORM_NAME} \
+  make ${PLATFORM_NAME} \
     2>&1 | tee ${plugin_build_dir}/build.log
 popd
 

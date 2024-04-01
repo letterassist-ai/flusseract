@@ -38,11 +38,31 @@ if(DEFINED ANDROID_ABI)
   # Android builds using the NDK
   set(TARGET_TYPE "android-${ANDROID_ABI}")
   message(STATUS "Building for Android using NDK toolchain - ${TARGET_TYPE}")
+
+  add_custom_target(android
+    DEPENDS 
+      libzstd-${TARGET_TYPE}
+      libjpeg-${TARGET_TYPE}
+      libpng-${TARGET_TYPE}
+      libtiff-${TARGET_TYPE}
+      libleptonica-${TARGET_TYPE}
+      libtesseract-${TARGET_TYPE}
+  )
   
 elseif(DEFINED ENV{PLATFORM_NAME})
   # Apple builds using the Swift toolchain
   set(TARGET_TYPE "$ENV{PLATFORM_NAME}")
   message(STATUS "Building for Apple Darwin using the Swift toolchain - ${TARGET_TYPE}")
+  
+  add_custom_target(${TARGET_TYPE}
+    DEPENDS 
+      libzstd-${TARGET_TYPE}
+      libjpeg-${TARGET_TYPE}
+      libpng-${TARGET_TYPE}
+      libtiff-${TARGET_TYPE}
+      libleptonica-${TARGET_TYPE}
+      libtesseract-${TARGET_TYPE}
+  )
   
 else()
 
