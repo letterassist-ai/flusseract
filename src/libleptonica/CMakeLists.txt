@@ -5,18 +5,31 @@ set(GIT_TAG        1.84.1)
 
 set(DEPENDS "libjpeg;libpng;libtiff")
 
-# android device arm64 architecture
+# android device arm32 architecture
 ext_build_library_from_git(
   android armeabi-v7a android
   ${GIT_REPOSITORY} ${GIT_TAG}
   ${DEPENDS}
 )
-
 # android device arm64 architecture
 ext_build_library_from_git(
   android arm64-v8a android
   ${GIT_REPOSITORY} ${GIT_TAG}
   ${DEPENDS}
+)
+# android device x86 architecture
+ext_build_library_from_git(
+  android x86 android
+  ${GIT_REPOSITORY} ${GIT_TAG}
+  ${DEPENDS}
+
+)
+# android device x86_64 architecture
+ext_build_library_from_git(
+  android x86_64 android
+  ${GIT_REPOSITORY} ${GIT_TAG}
+  ${DEPENDS}
+
 )
 
 # iOS device arm64 architecture

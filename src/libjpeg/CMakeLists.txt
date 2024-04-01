@@ -3,15 +3,24 @@
 set(GIT_REPOSITORY https://github.com/libjpeg-turbo/libjpeg-turbo.git)
 set(GIT_TAG        3.0.2)
 
-# android device arm64 architecture
+# android device arm32 architecture
 ext_build_library_from_git(
   android armeabi-v7a android
   ${GIT_REPOSITORY} ${GIT_TAG}
 )
-
 # android device arm64 architecture
 ext_build_library_from_git(
   android arm64-v8a android
+  ${GIT_REPOSITORY} ${GIT_TAG}
+)
+# android device x86 architecture
+ext_build_library_from_git(
+  android x86 android
+  ${GIT_REPOSITORY} ${GIT_TAG}
+)
+# android device x86_64 architecture
+ext_build_library_from_git(
+  android x86_64 android
   ${GIT_REPOSITORY} ${GIT_TAG}
 )
 

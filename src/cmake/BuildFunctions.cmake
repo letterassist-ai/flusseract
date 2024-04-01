@@ -46,7 +46,9 @@ function(ext_build_library_from_git SDK ARCH OSTYPE GIT_REPOSITORY GIT_TAG)
     INSTALL_DIR    "${CMAKE_BINARY_DIR}/dist/${SDK}-${ARCH}"
 
     CONFIGURE_COMMAND "${CMAKE_SOURCE_DIR}/cmake/ext-run-cmake-for-${OSTYPE}.sh"
-                      "${SDK}" "${ARCH}" "<SOURCE_DIR>" "<INSTALL_DIR>" 
+                      "${SDK}" "${ARCH}" 
+                      "${CMAKE_CURRENT_BINARY_DIR}/src" 
+                      "${CMAKE_BINARY_DIR}/dist/${SDK}-${ARCH}" 
                       "${CMAKE_SOURCE_DIR}/${LIB_NAME}"
   )
 
@@ -99,7 +101,9 @@ function(ext_build_library_from_url SDK ARCH OSTYPE URL URL_HASH)
     DOWNLOAD_EXTRACT_TIMESTAMP true
 
     CONFIGURE_COMMAND "${CMAKE_SOURCE_DIR}/cmake/ext-run-cmake-for-${OSTYPE}.sh"
-                      "${SDK}" "${ARCH}" "<SOURCE_DIR>" "<INSTALL_DIR>" 
+                      "${SDK}" "${ARCH}" 
+                      "${CMAKE_CURRENT_BINARY_DIR}/src" 
+                      "${CMAKE_BINARY_DIR}/dist/${SDK}-${ARCH}" 
                       "${CMAKE_SOURCE_DIR}/${LIB_NAME}"
   )
 
@@ -150,7 +154,6 @@ function(ext_create_target_library TARGET_TYPE)
     add_custom_command(
       OUTPUT ${TARGET_LIB}
       COMMENT "Building multi-arch library module for ${TARGET_TYPE}..."
-      BYPRODUCTS ${TARGET_LIB}
       DEPENDS ${DEPENDENCIES}
       COMMAND sh -c ${LIPO_COMMAND}
       COMMAND cp -r 
@@ -165,7 +168,6 @@ function(ext_create_target_library TARGET_TYPE)
     add_custom_command(
       OUTPUT ${TARGET_LIB}
       COMMENT "Building multi-arch library module for ${TARGET_TYPE}..."
-      BYPRODUCTS ${TARGET_LIB}
       DEPENDS ${DEPENDENCIES}
       COMMAND cp
         ${FIRST_DEPENDENCY}

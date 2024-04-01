@@ -44,6 +44,10 @@ android {
         cmake {
             path "../src/CMakeLists.txt"
 
+            // Latest CMake version that the Android Gradle 
+            // Plugin uses available via Android SDK tools.
+            version "3.22.1" 
+
             // The default CMake version for the Android Gradle Plugin is 3.10.2.
             // https://developer.android.com/studio/projects/install-ndk#vanilla_cmake
             //
@@ -60,6 +64,6 @@ android {
     }
 
     defaultConfig {
-        minSdkVersion 19
+        minSdkVersion 28
     }
 }
