@@ -2,13 +2,63 @@
 
 Flutter plugin for the [Tesseract OCR](https://tesseract-ocr.github.io/) C++ library. This plugin provides bindings to [Flutter](https://flutter.dev/) that are similar to that provided by the [gosseract](https://github.com/otiai10/gosseract) SDK for Golang.
 
+This plugin implements support for OCR using a pure Tesseract solutions across all platforms. Both Andriod and MacOS/iOS provide native OCR capability via the [Google ML-Kit for Mobile](https://developers.google.com/ml-kit) and [Apple's Vision Framework](https://developer.apple.com/documentation/vision/recognizing_text_in_images) respectively. They may have better and more accurate models and if your use case is specific to those eco-systems you should consider using the native capability.
+
 ## Getting Started
 
-This project depends on the [Tesseract OCR](https://tesseract-ocr.github.io/) libraries which must be [installed](https://tesseract-ocr.github.io/tessdoc/Installation.html) to your development or build environment before you can run the example provided or add and use it as a dependency in your application. 
+This project builds the [Tesseract OCR](https://tesseract-ocr.github.io/) libraries and its dependencies from source. The plugin is built using make files generated via [CMake](https://cmake.org/). The build root can be found at `src/CMakeLists.txt` which adds Tesseract and its dependencies as external sub-projects that are downloaded directly from the library's official git our download site. The plugin wraps the Tesseract API as the Flusseract Dart class and exposes the most common functions used for OCR.
 
-If you wish to [build Tessaract from source](https://tesseract-ocr.github.io/tessdoc/Compiling.html) additional detail for different build platforms can be found below in addition to the official documentation for building from source.
+You can use the *Example* application to build and run the plugin on the various supported platforms. If you want to develop this project then follow the instructions below to set up the environment so you can run the unit tests during development.
 
-### Mac OS Build
+## Using the Plugin
+
+### Install
+
+Add the plugin as a dependency to you Flutter app's pubspec.yaml.
+
+```
+dependencies:
+  .
+  .
+  flusseract: ^0.0.1
+  .
+  .
+```
+
+The initial build of the plugin will take around 10 minutes when used within Flutter app it will download and compile Tesseract and its dependencies from source for the target platform.
+
+### Usage
+
+The tesseract data files packaged with the application's asset bundle need to be copied to a sandbox folder before the Tesseract library can load them. You will need at least the default trained language model (eng.trainedata) for Tesseract to intialize. Trained models may be found in the [tessdata](https://github.com/tesseract-ocr/tessdata) git repository. This initialization can be done via `TessData.Init()` which is an asynchronous call that needs to be run before any text extraction calls.
+
+```
+.
+.
+
+import 'package:flusseract/flusseract.dart' as flusseract;
+
+.
+.
+
+TessData.init().then((_) async {
+  final imageData = await rootBundle.load('assets/test-helloworld.png');
+
+  final image = flusseract.PixImage.fromBytes(
+    imageData.buffer.asUint8List(),
+  );
+
+  final tesseract = flusseract.Tesseract(
+    tessDataPath: TessData.tessDataPath,
+  );
+
+  final ocrText = await tesseract.utf8Text(image);
+  setState(() {
+    _ocrText = ocrText;
+  });
+});
+```
+
+### Developing on Mac OSX Systems
 
 **Install Dependencies**
 
@@ -30,32 +80,27 @@ brew install pango
 # Build dependencoes.  
 brew install \
   icu4c \
-  leptonica
+  leptonica \
+  tesseract
 
 # Optional packages for extra features.
 brew install libarchive
 ```
 
-**Compile**
+**Building and Running Unit Tests**
 
 ```
-git clone https://github.com/tesseract-ocr/tesseract/ && cd tesseract
-./autogen.sh && mkdir build && cd build
-# Optionally add CXX=g++-8 to the configure command if you really want to use a different compiler.
-BREW_PKG_PATH=/opt/homebrew/opt
-../configure \
-  PKG_CONFIG_PATH=${BREW_PKG_PATH}/icu4c/lib/pkgconfig:${BREW_PKG_PATH}/libarchive/lib/pkgconfig:${BREW_PKG_PATH}/libffi/lib/pkgconfig \
-  && make -j
-# Optionally install Tesseract.
-make install
-# Optionally build and install training tools.
-make training
-make training-install
+mkdir build
+cd build
+PLATFORM_NAME=macosx cmake ../src
+make test
 ```
 
 ## Project structure
 
 This template uses the following structure:
+
+* `example`: Contains an example app that uses the plugin.
 
 * `src`: Contains the native source code, and a CmakeFile.txt file for building
   that source code into a dynamic library.
@@ -63,55 +108,10 @@ This template uses the following structure:
 * `lib`: Contains the Dart code that defines the API of the plugin, and which
   calls into the native code using `dart:ffi`.
 
+* `test`: Contains the Dart unit tests that can be used to develop and test the plugin outside the context of device.
+
 * platform folders (`android`, `ios`, `windows`, etc.): Contains the build files
   for building and bundling the native code library with the platform application.
-
-## Building and bundling native code
-
-The `pubspec.yaml` specifies FFI plugins as follows:
-
-```yaml
-  plugin:
-    platforms:
-      some_platform:
-        ffiPlugin: true
-```
-
-This configuration invokes the native build for the various target platforms
-and bundles the binaries in Flutter applications using these FFI plugins.
-
-This can be combined with dartPluginClass, such as when FFI is used for the
-implementation of one platform in a federated plugin:
-
-```yaml
-  plugin:
-    implements: some_other_plugin
-    platforms:
-      some_platform:
-        dartPluginClass: SomeClass
-        ffiPlugin: true
-```
-
-A plugin can have both FFI and method channels:
-
-```yaml
-  plugin:
-    platforms:
-      some_platform:
-        pluginClass: SomeName
-        ffiPlugin: true
-```
-
-The native build systems that are invoked by FFI (and method channel) plugins are:
-
-* For Android: Gradle, which invokes the Android NDK for native builds.
-  * See the documentation in android/build.gradle.
-* For iOS and MacOS: Xcode, via CocoaPods.
-  * See the documentation in ios/image_processor.podspec.
-  * See the documentation in macos/image_processor.podspec.
-* For Linux and Windows: CMake.
-  * See the documentation in linux/CMakeLists.txt.
-  * See the documentation in windows/CMakeLists.txt.
 
 ## Flutter help
 

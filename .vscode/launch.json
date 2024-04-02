@@ -1,0 +1,11 @@
+{
+    "configurations": [       
+        {
+            "name": "flusseract example",
+            "program": "lib/main.dart",
+            "cwd": "example",
+            "request": "launch",
+            "type": "dart"
+        }
+    ]
+}

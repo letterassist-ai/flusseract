@@ -2,20 +2,27 @@ PODS:
   - flusseract (0.0.1):
     - Flutter
   - Flutter (1.0.0)
+  - path_provider_foundation (0.0.1):
+    - Flutter
+    - FlutterMacOS
 
 DEPENDENCIES:
   - flusseract (from `.symlinks/plugins/flusseract/ios`)
   - Flutter (from `Flutter`)
+  - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
 
 EXTERNAL SOURCES:
   flusseract:
     :path: ".symlinks/plugins/flusseract/ios"
   Flutter:
     :path: Flutter
+  path_provider_foundation:
+    :path: ".symlinks/plugins/path_provider_foundation/darwin"
 
 SPEC CHECKSUMS:
   flusseract: 32f9e8c7f2f55a681dbbea870262912a15f022d7
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
+  path_provider_foundation: 3784922295ac71e43754bd15e0653ccfd36a147c
 
 PODFILE CHECKSUM: 819463e6a0290f5a72f145ba7cde16e8b6ef0796
 
