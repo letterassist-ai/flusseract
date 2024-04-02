@@ -6,24 +6,21 @@
 build_tesseract_libs = <<-EOS
 !#/bin/bash -ex
 
-plugin_root="$(cd -P $(dirname ${PODS_TARGET_SRCROOT}) && pwd)"
-plugin_build_dir=${plugin_root}/build
+#
+# Note: SRCROOT == <Flutter App>/macos/Pods
+#
+plugin_build_dir=${SRCROOT}/flusseract/build
 mkdir -p ${plugin_build_dir}
-
 env > ${plugin_build_dir}/env.log
 
+plugin_src_root="$(cd -P $(dirname ${PODS_TARGET_SRCROOT}) && pwd)"
+
 pushd ${plugin_build_dir}
-cmake ../src && \
+cmake ${plugin_src_root}/src && \
   make ${PLATFORM_NAME} \
     2>&1 | tee ${plugin_build_dir}/build.log
 popd
 
-#
-# Note: SRCROOT == <Flutter App>/macos/Pod
-# The same var availalble within the podspec 
-# Ruby code is == <Flutter App>/macos.
-#
-mkdir -p ${SRCROOT}/flusseract
 ln -s ${plugin_build_dir}/dist/${PLATFORM_NAME}/include ${SRCROOT}/flusseract/include
 ln -s ${plugin_build_dir}/dist/${PLATFORM_NAME}/lib ${SRCROOT}/flusseract/lib
 
@@ -55,17 +52,17 @@ Flutter Tesseract OCR FFI plugin library.
       '${PODS_TARGET_SRCROOT}/../src/**/*',
     ], 
     :output_files => [
-      '${PODS_TARGET_SRCROOT}/../build/dist/${PLATFORM_NAME}/lib/libzstd.a',
-      '${PODS_TARGET_SRCROOT}/../build/dist/${PLATFORM_NAME}/lib/libjpeg.a',
-      '${PODS_TARGET_SRCROOT}/../build/dist/${PLATFORM_NAME}/lib/libpng.a',
-      '${PODS_TARGET_SRCROOT}/../build/dist/${PLATFORM_NAME}/lib/libtiff.a',
-      '${PODS_TARGET_SRCROOT}/../build/dist/${PLATFORM_NAME}/lib/libleptonica.a',
-      '${PODS_TARGET_SRCROOT}/../build/dist/${PLATFORM_NAME}/lib/libtesseract.a'
+      '${SRCROOT}/Pods/flusseract/libzstd.a',
+      '${SRCROOT}/Pods/flusseract/libjpeg.a',
+      '${SRCROOT}/Pods/flusseract/libpng.a',
+      '${SRCROOT}/Pods/flusseract/libtiff.a',
+      '${SRCROOT}/Pods/flusseract/libleptonica.a',
+      '${SRCROOT}/Pods/flusseract/libtesseract.a'
     ],
     :execution_position => :before_compile 
   }
   s.xcconfig = {
-    'HEADER_SEARCH_PATHS' => '$(inherited) ${PODS_TARGET_SRCROOT}/../build/dist/${PLATFORM_NAME}/include',
+    'HEADER_SEARCH_PATHS' => '$(inherited) ${SRCROOT}/flusseract/include',
     'OTHER_LDFLAGS' => '$(inherited) -all_load',
 
     # A bug seems to prevent the linker from finding the libraries 
