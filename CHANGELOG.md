@@ -1,8 +1,8 @@
-## 1.0.0
+## 0.1.0
 
 * Functional complete release.
-* Working example application included.
-* Tested on MacOSX, iPhone Simulator and Android Simulator.
+* Working example app included.
+* Tested on example app on MacOSX and iPhone Simulator.
 
 ## 0.0.2
 
