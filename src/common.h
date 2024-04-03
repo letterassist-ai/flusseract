@@ -35,7 +35,7 @@
   dup2(stream_fd, fileno(stream)); \
   close(pipe_fd[1]); \
   { \
-    int n = read(pipe_fd[0], buffer, size); \
+    ssize_t n = read(pipe_fd[0], buffer, size); \
     if (n > 0) { \
       buffer[n] = '\0'; \
     } else { \
