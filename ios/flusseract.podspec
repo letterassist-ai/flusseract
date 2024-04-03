@@ -21,8 +21,10 @@ cmake ${plugin_src_root}/src && \
     2>&1 | tee ${plugin_build_dir}/build.log
 popd
 
-ln -s ${plugin_build_dir}/dist/${PLATFORM_NAME}/include ${SRCROOT}/flusseract/include
-ln -s ${plugin_build_dir}/dist/${PLATFORM_NAME}/lib ${SRCROOT}/flusseract/lib
+rm -f ${SRCROOT}/flusseract/include \
+  && ln -s ${plugin_build_dir}/dist/${PLATFORM_NAME}/include ${SRCROOT}/flusseract/include
+rm -f ${SRCROOT}/flusseract/lib \
+  && ln -s ${plugin_build_dir}/dist/${PLATFORM_NAME}/lib ${SRCROOT}/flusseract/lib
 
 EOS
 
