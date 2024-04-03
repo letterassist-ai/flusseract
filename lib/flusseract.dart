@@ -4,3 +4,4 @@ library flusseract;
 export 'tesseract.dart';
 export 'tessdata.dart';
 export 'pix_image.dart';
+export 'logger.dart';

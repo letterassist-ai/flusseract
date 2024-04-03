@@ -1,10 +1,14 @@
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:logging/logging.dart';
 
 import 'package:ffi_helper_ab/ffi_helper.dart';
 import 'package:flusseract/flusseract.dart';
 
 void main() {
+  initLogging();
+
   test('Checks version of Tesseract library', () async {
     final version = Tesseract.version;
     expect(version, matches(RegExp(r'^5\.3\.4(-\d\d-\S+)?$')));
@@ -203,4 +207,17 @@ Je vous remercie.
       tesseract?.dispose();
     }
   });
+}
+
+void initLogging() {
+  Logger.root.level = Level.ALL;
+  Logger.root.onRecord.listen((record) {
+    debugPrint(
+      '${record.time} '
+      '[${record.loggerName}] '
+      '${record.level.name}: '
+      '${record.message}',
+    );
+  });
+  LibFlusseractLogger.init();
 }

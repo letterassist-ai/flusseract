@@ -201,14 +201,12 @@ class Tesseract extends ForeignInstanceStub {
         }
         tessDataPathPtr = _tessDataPath.toNativeUtf8().cast<ffi.Char>();
       }
-      errorBufferPtr = calloc.allocate<ffi.Char>(512);
 
       final res = bindings.flusseract.Init(
         handle,
         tessDataPathPtr,
         languagesPtr,
         configFilePathPtr,
-        errorBufferPtr,
       );
       if (res != 0) {
         final error = errorBufferPtr.cast<Utf8>().toDartString();

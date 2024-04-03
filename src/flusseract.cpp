@@ -5,13 +5,17 @@
 #include <tesseract/baseapi.h>
 
 #include "flusseract.h"
+#include "logger.h"
+#include "logfns.h"
 
 FFI_PLUGIN_EXPORT tess_api_ptr_t Create() {
+    logTrace("Creating Tesseract API instance.");
     tesseract::TessBaseAPI* api = new tesseract::TessBaseAPI();
     return (void*)api;
 }
 
 FFI_PLUGIN_EXPORT void Destroy(tess_api_ptr_t a) {
+    logTrace("Destroying Tesseract API instance.");
     tesseract::TessBaseAPI* api = (tesseract::TessBaseAPI*)a;
     if (api != nullptr) {
         api->Clear();
@@ -32,20 +36,12 @@ FFI_PLUGIN_EXPORT const char* GetDataPath() {
     return api.GetDatapath();
 }
 
-FFI_PLUGIN_EXPORT int Init(tess_api_ptr_t a, char* tessdataprefix, char* languages, char* configfilepath, char* errbuf) {
+FFI_PLUGIN_EXPORT int Init(tess_api_ptr_t a, char* tessdataprefix, char* languages, char* configfilepath) {
+    CAPTURE_STD_STREAMS()
+
     tesseract::TessBaseAPI* api = (tesseract::TessBaseAPI*)a;
-
-    // {{{ Redirect STDERR to given buffer
-    int original_stderr = 0;
-    if (errbuf != NULL) {
-      fflush(stderr);
-      original_stderr = dup(STDERR_FILENO);
-      (void)freopen("/dev/null", "a", stderr);
-      setbuf(stderr, errbuf);
-    }
-    // }}}
-
     int ret;
+
     if (configfilepath != NULL) {
         char* configs[] = {configfilepath};
         int configs_size = 1;
@@ -53,16 +49,9 @@ FFI_PLUGIN_EXPORT int Init(tess_api_ptr_t a, char* tessdataprefix, char* languag
     } else {
         ret = api->Init(tessdataprefix, languages);
     }
-
-    // {{{ Restore default stderr
-    if (errbuf != NULL) {
-      (void)freopen("/dev/null", "a", stderr);
-      dup2(original_stderr, STDERR_FILENO);
-      close(original_stderr);
-      setbuf(stderr, NULL);
-    }
-    // }}}
-
+    logInfo("Tesseract initialized languages [%s] from Tesseract data path '%s'.", languages, tessdataprefix);
+    
+    LOG_STD_STREAMS()
     return ret;
 }
 
@@ -211,26 +200,38 @@ FFI_PLUGIN_EXPORT bounding_boxes* GetBoundingBoxesVerbose(tess_api_ptr_t a) {
 }
 
 FFI_PLUGIN_EXPORT pix_image_ptr_t CreatePixImageByFilePath(char* imagepath) {
+    CAPTURE_STD_STREAMS()
     Pix* image = pixRead(imagepath);
+    logTrace("Image loaded from file '%s': %p.", imagepath, image);
+    LOG_STD_STREAMS()
     return (void*)image;
 }
 
 FFI_PLUGIN_EXPORT pix_image_ptr_t CreatePixImageFromBytes(uint8_t* data, int size) {
+    CAPTURE_STD_STREAMS()
     Pix* image = pixReadMem(data, (size_t)size);
+    logTrace("Image loaded from memory: %p.", image);
+    LOG_STD_STREAMS()
     return (void*)image;
 }
 
 FFI_PLUGIN_EXPORT int32_t GetPixImageWidth(pix_image_ptr_t pix) {
+    CAPTURE_STD_STREAMS()
     Pix* img = (Pix*)pix;
+    LOG_STD_STREAMS()
     return pixGetWidth(img);
 }
 
 FFI_PLUGIN_EXPORT int32_t GetPixImageHeight(pix_image_ptr_t pix) {
+    CAPTURE_STD_STREAMS()
     Pix* img = (Pix*)pix;
+    LOG_STD_STREAMS()
     return pixGetHeight(img);
 }
 
 FFI_PLUGIN_EXPORT void DestroyPixImage(pix_image_ptr_t pix) {
+    CAPTURE_STD_STREAMS()
     Pix* img = (Pix*)pix;
     pixDestroy(&img);
+    LOG_STD_STREAMS()
 }

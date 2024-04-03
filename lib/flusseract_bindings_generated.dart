@@ -27,6 +27,21 @@ class FlusseractBindings {
           lookup)
       : _lookup = lookup;
 
+  /// Set the logger to be used by the library
+  void setLogger(
+    ffi.Pointer<logger_t> arg0,
+  ) {
+    return _setLogger(
+      arg0,
+    );
+  }
+
+  late final _setLoggerPtr =
+      _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Pointer<logger_t>)>>(
+          'setLogger');
+  late final _setLogger =
+      _setLoggerPtr.asFunction<void Function(ffi.Pointer<logger_t>)>();
+
   tess_api_ptr_t Create() {
     return _Create();
   }
@@ -76,28 +91,22 @@ class FlusseractBindings {
     ffi.Pointer<ffi.Char> arg1,
     ffi.Pointer<ffi.Char> arg2,
     ffi.Pointer<ffi.Char> arg3,
-    ffi.Pointer<ffi.Char> arg4,
   ) {
     return _Init(
       arg0,
       arg1,
       arg2,
       arg3,
-      arg4,
     );
   }
 
   late final _InitPtr = _lookup<
       ffi.NativeFunction<
-          ffi.Int Function(
-              tess_api_ptr_t,
-              ffi.Pointer<ffi.Char>,
-              ffi.Pointer<ffi.Char>,
-              ffi.Pointer<ffi.Char>,
-              ffi.Pointer<ffi.Char>)>>('Init');
+          ffi.Int Function(tess_api_ptr_t, ffi.Pointer<ffi.Char>,
+              ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>)>>('Init');
   late final _Init = _InitPtr.asFunction<
       int Function(tess_api_ptr_t, ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>,
-          ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>)>();
+          ffi.Pointer<ffi.Char>)>();
 
   void Clear(
     tess_api_ptr_t arg0,
@@ -323,17 +332,21 @@ class FlusseractBindings {
           'DestroyPixImage');
   late final _DestroyPixImage =
       _DestroyPixImagePtr.asFunction<void Function(pix_image_ptr_t)>();
-
-  ffi.Pointer<ffi.Char> PluginVersion() {
-    return _PluginVersion();
-  }
-
-  late final _PluginVersionPtr =
-      _lookup<ffi.NativeFunction<ffi.Pointer<ffi.Char> Function()>>(
-          'PluginVersion');
-  late final _PluginVersion =
-      _PluginVersionPtr.asFunction<ffi.Pointer<ffi.Char> Function()>();
 }
+
+final class logger_t extends ffi.Struct {
+  @ffi.Int64()
+  external int context;
+
+  external log_t log;
+}
+
+/// Client interface for logging
+/// messages from C/C++ code
+typedef log_t = ffi.Pointer<ffi.NativeFunction<log_tFunction>>;
+typedef log_tFunction = ffi.Void Function(
+    ffi.Int64, ffi.Int, ffi.Pointer<ffi.Char>);
+typedef Dartlog_tFunction = void Function(int, int, ffi.Pointer<ffi.Char>);
 
 final class bounding_box extends ffi.Struct {
   @ffi.Int()
@@ -375,3 +388,5 @@ final class bounding_boxes extends ffi.Struct {
 
 typedef tess_api_ptr_t = ffi.Pointer<ffi.Void>;
 typedef pix_image_ptr_t = ffi.Pointer<ffi.Void>;
+
+const int BUFFER_SIZE = 4096;

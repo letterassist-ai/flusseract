@@ -1,20 +1,7 @@
-#include <stdint.h>
-#include <stdbool.h>
-#include <stdio.h>
-#include <stdlib.h>
+#include "common.h"
 
-#if _WIN32
-#include <windows.h>
-#else
-#include <pthread.h>
-#include <unistd.h>
-#endif
-
-#if _WIN32
-#define FFI_PLUGIN_EXPORT __declspec(dllexport)
-#else
-#define FFI_PLUGIN_EXPORT
-#endif
+#ifndef FLUSSERACT_H
+#define FLUSSERACT_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -41,7 +28,7 @@ FFI_PLUGIN_EXPORT void Destroy(tess_api_ptr_t);
 FFI_PLUGIN_EXPORT const char* Version(tess_api_ptr_t);
 FFI_PLUGIN_EXPORT const char* GetDataPath();
 
-FFI_PLUGIN_EXPORT int Init(tess_api_ptr_t, char*, char*, char*, char*);
+FFI_PLUGIN_EXPORT int Init(tess_api_ptr_t, char*, char*, char*);
 
 FFI_PLUGIN_EXPORT void Clear(tess_api_ptr_t);
 FFI_PLUGIN_EXPORT void ClearPersistentCache(tess_api_ptr_t);
@@ -67,3 +54,5 @@ FFI_PLUGIN_EXPORT void DestroyPixImage(pix_image_ptr_t);
 #ifdef __cplusplus
 }
 #endif /* extern "C" */
+
+#endif // FLUSSERACT_H
