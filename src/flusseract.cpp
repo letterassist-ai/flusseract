@@ -49,9 +49,9 @@ FFI_PLUGIN_EXPORT int Init(tess_api_ptr_t a, char* tessdataprefix, char* languag
   } else {
     ret = api->Init(tessdataprefix, languages);
   }
-  logInfo("Tesseract initialized languages [%s] from Tesseract data path '%s'.", languages, tessdataprefix);
   
   LOG_STD_STREAMS()
+  logInfo("Tesseract initialized languages [%s] from Tesseract data path '%s'.", languages, tessdataprefix);
   return ret;
 }
 
@@ -202,16 +202,16 @@ FFI_PLUGIN_EXPORT bounding_boxes* GetBoundingBoxesVerbose(tess_api_ptr_t a) {
 FFI_PLUGIN_EXPORT pix_image_ptr_t CreatePixImageByFilePath(char* imagepath) {
   CAPTURE_STD_STREAMS()
   Pix* image = pixRead(imagepath);
-  logTrace("Image loaded from file '%s': %p.", imagepath, image);
   LOG_STD_STREAMS()
+  logTrace("Image loaded from file '%s': %p.", imagepath, image);
   return (void*)image;
 }
 
 FFI_PLUGIN_EXPORT pix_image_ptr_t CreatePixImageFromBytes(uint8_t* data, int size) {
   CAPTURE_STD_STREAMS()
   Pix* image = pixReadMem(data, (size_t)size);
-  logTrace("Image loaded from memory: %p.", image);
   LOG_STD_STREAMS()
+  logTrace("Image loaded from memory: %p.", image);
   return (void*)image;
 }
 
