@@ -1,6 +1,6 @@
 name: flusseract
 description: "Flutter plugin for Tesseract OCR library."
-version: 0.1.0
+version: 0.1.1
 homepage: "https://github.com/letterassist-ai/flusseract"
 
 environment:
@@ -15,6 +15,7 @@ dependencies:
   ffi: ^2.1.2
   ffi_helper_ab: ^0.0.2
   path_provider: ^2.1.2
+  logging: ^1.2.0
 
 dev_dependencies:
   ffigen: ^11.0.0

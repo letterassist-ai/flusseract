@@ -1,11 +1,44 @@
-import 'package:flusseract/tessdata.dart';
+import 'dart:developer' as developer;
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:logging/logging.dart';
 
 import 'package:flusseract/flusseract.dart' as flusseract;
 
 void main() {
-  runApp(const MyApp());
+  WidgetsFlutterBinding.ensureInitialized();
+
+  Logger.root.level = Level.ALL;
+  Logger.root.onRecord.listen((record) {
+    final message = '${record.loggerName}.${record.message}';
+    if (kDebugMode) {
+      if (record.error != null) {
+        print(
+          '${record.level.name}: ${record.time}: $message =>'
+          'error: ${record.error}; stackTrace: ${record.stackTrace}',
+        );
+      } else {
+        print('${record.level.name}: ${record.time}: $message');
+      }
+    } else {
+      developer.log(
+        message,
+        time: record.time,
+        sequenceNumber: record.sequenceNumber,
+        level: record.level.value,
+        name: record.loggerName,
+        zone: record.zone,
+        error: record.error,
+        stackTrace: record.stackTrace,
+      );
+    }
+  });
+  flusseract.LibFlusseractLogger.init();
+
+  flusseract.TessData.init().then((_) {
+    runApp(const MyApp());
+  });
 }
 
 class MyApp extends StatefulWidget {
@@ -25,19 +58,21 @@ class _MyAppState extends State<MyApp> {
     super.initState();
     tessVersion = flusseract.Tesseract.version;
 
-    TessData.init().then((_) async {
-      final imageData = await rootBundle.load('assets/test-helloworld.png');
-      final image = flusseract.PixImage.fromBytes(
-        imageData.buffer.asUint8List(),
-      );
-      final tesseract = flusseract.Tesseract(
-        tessDataPath: TessData.tessDataPath,
-      );
-      final ocrText = await tesseract.utf8Text(image);
-      setState(() {
-        _ocrText = ocrText;
-      });
-    });
+    rootBundle.load('assets/test-helloworld.png').then(
+      (imageData) async {
+        final image = flusseract.PixImage.fromBytes(
+          imageData.buffer.asUint8List(),
+        );
+        final tesseract = flusseract.Tesseract(
+          tessDataPath: flusseract.TessData.tessDataPath,
+        );
+        final ocrText = await tesseract.utf8Text(image);
+
+        setState(() {
+          _ocrText = ocrText;
+        });
+      },
+    );
   }
 
   @override
