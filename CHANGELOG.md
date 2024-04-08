@@ -1,3 +1,7 @@
+## 0.1.2
+
+* Fixed error in script in podspec files for MacOS and iOS.
+
 ## 0.1.1
 
 * Log stdout and stderr from libtesseract functions to the Flutter logger.
