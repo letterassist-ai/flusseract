@@ -4,7 +4,7 @@
 #
 
 build_tesseract_libs = <<-EOS
-!#/bin/bash -ex
+set -ex
 
 #
 # Note: SRCROOT == <Flutter App>/macos/Pods
@@ -47,12 +47,12 @@ Flutter Tesseract OCR FFI plugin library.
   s.source_files        = 'Classes/**/*'
   s.public_header_files = '${PODS_TARGET_SRCROOT}/../src/*.h'
 
-  s.script_phase = { 
-    :name => 'Build Flusseract Source', 
+  s.script_phase = {
+    :name => 'Build Flusseract Source',
     :script => build_tesseract_libs,
     :input_files => [
       '${PODS_TARGET_SRCROOT}/../src/**/*',
-    ], 
+    ],
     :output_files => [
       '${SRCROOT}/Pods/flusseract/libzstd.a',
       '${SRCROOT}/Pods/flusseract/libjpeg.a',
@@ -61,13 +61,13 @@ Flutter Tesseract OCR FFI plugin library.
       '${SRCROOT}/Pods/flusseract/libleptonica.a',
       '${SRCROOT}/Pods/flusseract/libtesseract.a'
     ],
-    :execution_position => :before_compile 
+    :execution_position => :before_compile
   }
   s.xcconfig = {
     'HEADER_SEARCH_PATHS' => '$(inherited) ${SRCROOT}/flusseract/include',
     'OTHER_LDFLAGS' => '$(inherited) -all_load',
 
-    # A bug seems to prevent the linker from finding the libraries 
+    # A bug seems to prevent the linker from finding the libraries
     # as it appears to ignore PODS_TARGET_SRCROOT in the path. But
     # even after creating an absolute path to the libraries the
     # via SRCROOT it still fails as SRCROOT seems to have different
@@ -85,14 +85,14 @@ Flutter Tesseract OCR FFI plugin library.
     'leptonica',
     'tesseract'
   ]
-  
+
   s.dependency 'Flutter'
   s.platform = :ios, '12.0'
 
   # Flutter.framework does not contain a i386 slice.
-  s.pod_target_xcconfig = { 
-    'DEFINES_MODULE' => 'YES', 
-    'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'i386' 
+  s.pod_target_xcconfig = {
+    'DEFINES_MODULE' => 'YES',
+    'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'i386'
   }
   s.swift_version = '5.0'
 end
