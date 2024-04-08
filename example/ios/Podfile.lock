@@ -20,7 +20,7 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/path_provider_foundation/darwin"
 
 SPEC CHECKSUMS:
-  flusseract: b6c028f85088054259fd28c8de2f6ff7eb4e97bf
+  flusseract: 7d722d3f7e425a92912b62f9a4752dd102be4f8d
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
   path_provider_foundation: 3784922295ac71e43754bd15e0653ccfd36a147c
 
