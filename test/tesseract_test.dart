@@ -62,12 +62,15 @@ void main() {
     PixImage? image;
     Tesseract? tesseract;
 
+    final dataPath = '${Directory.current.path}/test/data/';
+
     try {
       image = PixImage.fromFile(
         'test/data/images/test-helloworld.png',
       );
       tesseract = Tesseract(
-        tessDataPath: '${Directory.current.path}/test/data/tessdata/',
+        tessDataPath: '$dataPath/tessdata/',
+        configFilePath: '$dataPath/tessconfig',
       );
       final textUTF8 = await tesseract.utf8Text(image);
       expect(textUTF8.trim(), contains('Hello, World!'));
@@ -80,8 +83,8 @@ void main() {
    <div class='ocr_carea' id='block_1_1' title="bbox 74 64 1099 190">
     <p class='ocr_par' id='par_1_1' lang='eng' title="bbox 74 64 1099 190">
      <span class='ocr_line' id='line_1_1' title="bbox 74 64 1099 190; baseline 0 -22; x_size 126; x_descenders 21; x_ascenders 27">
-      <span class='ocrx_word' id='word_1_1' title='bbox 74 64 524 190; x_wconf 88'>Hello,</span>
-      <span class='ocrx_word' id='word_1_2' title='bbox 638 64 1099 170; x_wconf 91'>World!</span>
+      <span class='ocrx_word' id='word_1_1' title='bbox 74 64 524 190; x_wconf 94'>Hello,</span>
+      <span class='ocrx_word' id='word_1_2' title='bbox 638 64 1099 170; x_wconf 96'>World!</span>
      </span>
     </p>
    </div>
@@ -145,6 +148,7 @@ void main() {
       );
       tesseract = Tesseract(
         languages: ['fra'],
+        pageSegMode: PageSegMode.singleBlock,
         tessDataPath: '${Directory.current.path}/test/data/tessdata/',
       );
       final textUTF8 = await tesseract.utf8Text(image);
@@ -153,17 +157,17 @@ void main() {
         equals(
           """des systèmes d'état-cvil et de l'ambigüité et des contradictions des codes de
 nationalité. Sur la base d'une étude qu'elle préconise pour les prochains mois,
-cette Inititive de N'Djaména entend développer une poltique commune pour
+cette Initiative de N'Djaména entend développer une politique commune pour
 une prévention conséquente et une réelle éradication du phénomène, tant ses
-enjeux sont cruciaux pourle développement et la stabilté. Car lapatridie n'est
+enjeux sont cruciaux pour le développement et la stabilité. Car lapatridie n'est
 pas seulement une dénégation des droits humains ; elle constitue aussi une
 incompatibiité avec les valeurs de gouvemance et compromet de ce fait la
 stabilité.
 La Commission de la CEMAC s'engage en conséquence, avant octobre 2019,
 à obtenir de ses États membres la désignation des points focaux apatridie,
-porte d'entrée pour la réalisation de la feulle de route tracée par l'Initiative de
+porte d'entrée pour la réalisation de la feuille de route tracée par l'Initiative de
 N'Djaména.
-Vive les initatives de protection des droits de la personne !
+Vive les initiatives de protection des droits de la personne !
 Vive les projets destinés à garantir la dimension humaine du développement !
 Je vous remercie.
 
@@ -195,15 +199,116 @@ Je vous remercie.
       expect(
         boxes[0].toString(),
         'BoundingBox(x1: 74, y1: 64, x2: 524, y2: 190, '
-        'word: "Hello,", confidence: 88.32%)',
+        'word: "Hello,", confidence: 94.81%)',
       );
       expect(
         boxes[1].toString(),
         'BoundingBox(x1: 638, y1: 64, x2: 1099, y2: 170, '
-        'word: "World!", confidence: 91.28%)',
+        'word: "World!", confidence: 96.12%)',
       );
     } finally {
       image?.dispose();
+      tesseract?.dispose();
+    }
+  });
+
+  test('Extracts texts from a multi-page TIFF', () async {
+    Tesseract? tesseract;
+
+    final dataPath = '${Directory.current.path}/test/data/';
+
+    try {
+      tesseract = Tesseract(
+        languages: ['eng'],
+        tessDataPath: '$dataPath/tessdata/fast/',
+        configFilePath: '$dataPath/tessconfig',
+      );
+      final text = await tesseract.processDocument(
+        'test/data/images/discharge-letter.tiff',
+      );
+      expect(
+        text.trim(),
+        equals(
+          """Discharge Advice Letter ‘Cwm Taf Morgannwg University Heath Board
+Unit 3Ynysmeurg House, Navigation
+
+Park, Abereynon, Mountain Ash CF4S 4SN
+
+ratient: Alfred Jenkins (Mr.) OUNCE
+
+DOB: 25-May-1965 Sex: M Howptal Number M9909
+GP details Patient details
+GP Name Dr O'SULLIVAN Patient Name Alfred Jenkins (Mr)
+Organisation 1D ‘was00s ‘
+GP Address PONT NEWvop me centre | | Known As al
+‘Aberthondda Road Date of Birth 25-May-1965
+Port
+Sex M
+Rhondda
+ca90 NHS Number 432456 3783
+GP Telephone Number 01443 688880 Hospital Number 9999099
+Patient Address 13 St Andrews Road
+Penycoedcae
+Pointypridd
+cea7 De
+‘Admission details Discharge details
+Date of admission 27-Now-2023, Discharging consultant Dr Timathy Oye
+Time of admission 10:00
+Method of admission Usual place of residence
+Source of admission Emergency other means
+Hospital site wards
+
+Presenting complaints) or reason for admission
+
+The patient reports experiencing episodes of chest pain for the past [duration]. The pain is typically
+described as a squeezing, pressure-ike sensation in the chest, often radiating to the left arm, neck, jaw,
+fr back. The episodes are usualy triggered by physical exertion or emotional stress and relieved by rest
+Cr sublingual nitroglycerin. The frequency and severity of the episodes have been progressively
+Increasing over the past few weeks/months.
+
+Diagnoses, problems
+Angina
+
+Page Lof3
+Document Author System on 27-Nov-2023 at 10:19 /1
+Printed By KULATILAKE, Priyantha , GPST on 29-Nov-2023,
+\f‘The patient will follow up with the cardiologist in 3 months for further assessment and management.
+
+Please could you ade these new medications to his repeat prescription
+
+Cum Tt Morgan University Heath Board
+Discharge Advice Letter Unit 3 Ynysmeurig House, Navigation
+Park, Abeceyan Mountain Ah CF 44
+
+patient: James Jones (Mr.) AE
+
+‘Atorvastatin
+
+Dr O'SULLIVAN Patient Name James Jones (Me)
+Organisation 1D ‘was00s
+GP Address PONT NEWvop me centre | | Known As James
+Aberthondda Road Date of Birth (05-Jun-1970 (53y)
+Port Sex M
+Rhondda
+3900 NHS Number 123456 7899
+GPTelephone Number 01443 688880 Hospital Number 19999999
+Patient Address 13 St Andrews Road
+Penycoedcae
+Pointypridd
+cea7 De
+== ae Stated
+Page 2013
+Document Author System on 27-Nov-2023 at 10:19 1
+
+Printed By KULATILAKE, Priyantha , GPST on 29-Nov-2023,
+\fWeight (¥@) Not Stated
+
+Page 30f3
+Document Author System on 27-Nov-2023 at 10:19 1
+Printed By KULATILAKE, Priyantha , GPST on 29-Nov-2023,""",
+        ),
+      );
+    } finally {
       tesseract?.dispose();
     }
   });

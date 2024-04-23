@@ -228,6 +228,26 @@ class FlusseractBindings {
   late final _HOCRText =
       _HOCRTextPtr.asFunction<ffi.Pointer<ffi.Char> Function(tess_api_ptr_t)>();
 
+  void ProcessDocumentFile(
+    tess_api_ptr_t arg0,
+    ffi.Pointer<ffi.Char> arg1,
+    ffi.Pointer<ffi.Char> arg2,
+  ) {
+    return _ProcessDocumentFile(
+      arg0,
+      arg1,
+      arg2,
+    );
+  }
+
+  late final _ProcessDocumentFilePtr = _lookup<
+      ffi.NativeFunction<
+          ffi.Void Function(tess_api_ptr_t, ffi.Pointer<ffi.Char>,
+              ffi.Pointer<ffi.Char>)>>('ProcessDocumentFile');
+  late final _ProcessDocumentFile = _ProcessDocumentFilePtr.asFunction<
+      void Function(
+          tess_api_ptr_t, ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>)>();
+
   ffi.Pointer<bounding_boxes> GetBoundingBoxes(
     tess_api_ptr_t arg0,
     int arg1,

@@ -1,8 +1,10 @@
 #include <stdio.h>
 #include <unistd.h>
+#include <memory>     // std::unique_ptr
 
 #include <leptonica/allheaders.h>
 #include <tesseract/baseapi.h>
+#include <tesseract/renderer.h>
 
 #include "flusseract.h"
 #include "logger.h"
@@ -47,9 +49,9 @@ FFI_PLUGIN_EXPORT int Init(tess_api_ptr_t a, char* tessdataprefix, char* languag
     int configs_size = 1;
     ret = api->Init(tessdataprefix, languages, tesseract::OEM_LSTM_ONLY, configs, configs_size, NULL, NULL, false);
   } else {
-    ret = api->Init(tessdataprefix, languages);
+    ret = api->Init(tessdataprefix, languages, tesseract::OEM_LSTM_ONLY);
   }
-  
+
   LOG_STD_STREAMS()
   logInfo("Tesseract initialized languages [%s] from Tesseract data path '%s'.", languages, tessdataprefix);
   return ret;
@@ -93,13 +95,30 @@ FFI_PLUGIN_EXPORT void SetPixImage(tess_api_ptr_t a, pix_image_ptr_t pix) {
 }
 
 FFI_PLUGIN_EXPORT char* UTF8Text(tess_api_ptr_t a) {
+  CAPTURE_STD_STREAMS()
   tesseract::TessBaseAPI* api = (tesseract::TessBaseAPI*)a;
-  return api->GetUTF8Text();
+  char *utf8Text = api->GetUTF8Text();
+  LOG_STD_STREAMS()
+  return utf8Text;
 }
 
 FFI_PLUGIN_EXPORT char* HOCRText(tess_api_ptr_t a) {
+  CAPTURE_STD_STREAMS()
   tesseract::TessBaseAPI* api = (tesseract::TessBaseAPI*)a;
-  return api->GetHOCRText(0);
+  char *hocrText = api->GetHOCRText(0);
+  LOG_STD_STREAMS()
+  return hocrText;
+}
+
+FFI_PLUGIN_EXPORT void ProcessDocumentFile(tess_api_ptr_t a, char* imagepath, char* outputbase) {
+  CAPTURE_STD_STREAMS()
+  tesseract::TessBaseAPI* api = (tesseract::TessBaseAPI*)a;
+  auto renderer = std::make_unique<tesseract::TessTextRenderer>(outputbase);
+  bool ok = api->ProcessPages(imagepath, nullptr, 0, renderer.get());
+  if (!ok) {
+    fprintf(stderr, "Error during processing.\n");
+  }
+  LOG_STD_STREAMS()
 }
 
 FFI_PLUGIN_EXPORT bounding_boxes* GetBoundingBoxes(tess_api_ptr_t a, int pageIteratorLevel) {

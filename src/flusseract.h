@@ -42,12 +42,14 @@ FFI_PLUGIN_EXPORT void SetPixImage(tess_api_ptr_t, pix_image_ptr_t);
 FFI_PLUGIN_EXPORT char* UTF8Text(tess_api_ptr_t);
 FFI_PLUGIN_EXPORT char* HOCRText(tess_api_ptr_t);
 
+FFI_PLUGIN_EXPORT void ProcessDocumentFile(tess_api_ptr_t, char*, char*);
+
 FFI_PLUGIN_EXPORT struct bounding_boxes* GetBoundingBoxes(tess_api_ptr_t, int);
 FFI_PLUGIN_EXPORT struct bounding_boxes* GetBoundingBoxesVerbose(tess_api_ptr_t);
 
 FFI_PLUGIN_EXPORT pix_image_ptr_t CreatePixImageByFilePath(char*);
 FFI_PLUGIN_EXPORT pix_image_ptr_t CreatePixImageFromBytes(uint8_t*, int);
-FFI_PLUGIN_EXPORT int32_t GetPixImageWidth(pix_image_ptr_t); 
+FFI_PLUGIN_EXPORT int32_t GetPixImageWidth(pix_image_ptr_t);
 FFI_PLUGIN_EXPORT int32_t GetPixImageHeight(pix_image_ptr_t);
 FFI_PLUGIN_EXPORT void DestroyPixImage(pix_image_ptr_t);
 

@@ -8,7 +8,7 @@ set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH};${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 include(ExternalProject)
 include(BuildFunctions)
 
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 set(LIB flusseract)
@@ -40,7 +40,7 @@ if(DEFINED ANDROID_ABI)
   message(STATUS "Building for Android using NDK toolchain - ${TARGET_TYPE}")
 
   add_custom_target(android
-    DEPENDS 
+    DEPENDS
       libzstd-${TARGET_TYPE}
       libjpeg-${TARGET_TYPE}
       libpng-${TARGET_TYPE}
@@ -48,14 +48,14 @@ if(DEFINED ANDROID_ABI)
       libleptonica-${TARGET_TYPE}
       libtesseract-${TARGET_TYPE}
   )
-  
+
 elseif(DEFINED ENV{PLATFORM_NAME})
   # Apple builds using the Swift toolchain
   set(TARGET_TYPE "$ENV{PLATFORM_NAME}")
   message(STATUS "Building for Apple Darwin using the Swift toolchain - ${TARGET_TYPE}")
-  
+
   add_custom_target(${TARGET_TYPE}
-    DEPENDS 
+    DEPENDS
       libzstd-${TARGET_TYPE}
       libjpeg-${TARGET_TYPE}
       libpng-${TARGET_TYPE}
@@ -63,7 +63,7 @@ elseif(DEFINED ENV{PLATFORM_NAME})
       libleptonica-${TARGET_TYPE}
       libtesseract-${TARGET_TYPE}
   )
-  
+
 else()
 
   if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
@@ -88,11 +88,11 @@ else()
 endif()
 
 if(DEFINED TARGET_TYPE)
-  
-  # Android NDK does not have liblzma. So skip 
-  # it as other libraries will be built without 
+
+  # Android NDK does not have liblzma. So skip
+  # it as other libraries will be built without
   # it and so we do not need to link it.
-  if(NOT DEFINED ANDROID_ABI)  
+  if(NOT DEFINED ANDROID_ABI)
     find_package(LibLZMA)
     if(NOT LIBLZMA_FOUND)
       message(FATAL_ERROR "liblzma not found")
@@ -114,7 +114,7 @@ if(DEFINED TARGET_TYPE)
   add_static_library_dependency(libleptonica ${TARGET_TYPE})
   add_static_library_dependency(libtesseract ${TARGET_TYPE})
 
-  target_link_libraries(${LIB} 
+  target_link_libraries(${LIB}
     ${LIBLZMA_LIBRARIES}
     ${ZLIB_LIBRARIES}
     libzstd
@@ -151,7 +151,7 @@ add_custom_target(test
   DEPENDS ${LIB}
   WORKING_DIRECTORY ${ROOT_DIR}
   COMMAND ${CMAKE_COMMAND} -E make_directory ${ROOT_DIR}/${LIB}.framework
-  COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_BINARY_DIR}/${SHARED_LIB_NAME} ${ROOT_DIR}/${LIB}.framework/${LIB}
-  COMMAND flutter test ${ROOT_DIR}/test
+  COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_CURRENT_BINARY_DIR}/${SHARED_LIB_NAME} ${ROOT_DIR}/${LIB}.framework/${LIB}
+  COMMAND flutter test ${ROOT_DIR}/test #--plain-name 'TEST'
   COMMENT "Running ${LIB} plugin tests"
 )

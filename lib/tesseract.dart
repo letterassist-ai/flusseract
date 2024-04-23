@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:ffi' as ffi;
 import 'package:ffi/ffi.dart';
 import 'package:ffi_helper_ab/ffi_helper.dart';
+import 'package:uuid/uuid.dart';
 
 import 'flusseract_bindings.dart' as bindings;
 import 'flusseract_bindings_generated.dart' as generated;
@@ -17,18 +18,29 @@ class Tesseract extends ForeignInstanceStub {
 
   final String _tessDataPath;
   final String _configFilePath;
+  final String _tempDir;
+
+  late PageSegMode _pageSegMode;
+
   bool _needsInit = true;
 
   Tesseract({
     /// The path to the Tesseract data directory.
     List<String> languages = const ['eng'],
+    PageSegMode pageSegMode = PageSegMode.auto,
     String? tessDataPath,
     String? configFilePath,
+    String? tempDir,
   })  : _languages = languages,
+        _pageSegMode = pageSegMode,
         _tessDataPath =
             tessDataPath ?? Platform.environment['TESS_DATA_PATH'] ?? '',
         _configFilePath =
             configFilePath ?? Platform.environment['TESS_CONFIG_FILE'] ?? '',
+        _tempDir = tempDir ??
+            Platform.environment['TEMP'] ??
+            Platform.environment['TMP'] ??
+            Directory.systemTemp.path,
         super(
           bindings.flusseract.Create(),
           bindings.flusseract.Destroy,
@@ -45,6 +57,16 @@ class Tesseract extends ForeignInstanceStub {
   /// to be detected.
   void addLanguages(List<String> languages) {
     _languages.addAll(languages);
+    _needsInit = true;
+  }
+
+  /// Sets "Page Segmentation Mode" (PSM) to detect layout
+  /// of characters.
+  ///
+  /// ref: https://tesseract-ocr.github.io/tessdoc/ImproveQuality#page-segmentation-method
+  ///
+  void setPageSegMode(PageSegMode mode) {
+    _pageSegMode = mode;
     _needsInit = true;
   }
 
@@ -81,15 +103,6 @@ class Tesseract extends ForeignInstanceStub {
     }
   }
 
-  /// Sets "Page Segmentation Mode" (PSM) to detect layout
-  /// of characters.
-  ///
-  /// ref: https://tesseract-ocr.github.io/tessdoc/ImproveQuality#page-segmentation-method
-  ///
-  void setPageSegMode(PageSegMode mode) {
-    bindings.flusseract.SetPageSegMode(handle, mode.index);
-  }
-
   /// Executes character recognition on the given document
   /// image and returns the detected text.
   Future<String> utf8Text(PixImage image) async {
@@ -110,7 +123,7 @@ class Tesseract extends ForeignInstanceStub {
   }
 
   /// Executes character recognition on the given document
-  /// imageand returns the detected text in hOCR format.
+  /// image and returns the detected text in hOCR format.
   ///
   /// ref: https://en.wikipedia.org/wiki/HOCR
   ///
@@ -128,6 +141,45 @@ class Tesseract extends ForeignInstanceStub {
       return text.cast<Utf8>().toDartString();
     } finally {
       calloc.free(text);
+    }
+  }
+
+  /// Executes character recognition on the given document
+  /// image file and returns the detected text. This method
+  /// emulates the behavior of the `tesseract` command line.
+  Future<String> processDocument(String docImageFilePath) async {
+    if (_needsInit) {
+      _init();
+    }
+
+    final tempOutputFilePath = '$_tempDir/${uuid.v4()}';
+    final file = File('$tempOutputFilePath.txt');
+
+    final ffi.Pointer<ffi.Char> docImageFilePathPtr =
+        docImageFilePath.toNativeUtf8().cast<ffi.Char>();
+    final ffi.Pointer<ffi.Char> tempOutputFilePathPtr =
+        tempOutputFilePath.toNativeUtf8().cast<ffi.Char>();
+
+    try {
+      bindings.flusseract.ProcessDocumentFile(
+        handle,
+        docImageFilePathPtr,
+        tempOutputFilePathPtr,
+      );
+
+      if (!file.existsSync()) {
+        throw TesseractInitException(
+          'Failed to process document: $docImageFilePath',
+        );
+      }
+      return file.readAsStringSync();
+    } finally {
+      calloc.free(tempOutputFilePathPtr);
+      calloc.free(docImageFilePathPtr);
+
+      if (file.existsSync()) {
+        file.deleteSync();
+      }
     }
   }
 
@@ -218,6 +270,7 @@ class Tesseract extends ForeignInstanceStub {
       _variables.forEach((name, value) {
         _setVariable(name, value);
       });
+      bindings.flusseract.SetPageSegMode(handle, _pageSegMode.index);
 
       _needsInit = false;
     } finally {
@@ -261,6 +314,8 @@ class Tesseract extends ForeignInstanceStub {
     }
   }
 }
+
+const uuid = Uuid();
 
 /// Tessaract PageSegMode. See following links for more information.
 ///
