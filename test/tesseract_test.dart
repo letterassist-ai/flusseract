@@ -212,7 +212,7 @@ Je vous remercie.
     }
   });
 
-  test('Extracts texts from a multi-page TIFF', () async {
+  test('Extracts text from a multi-page TIFF', () async {
     Tesseract? tesseract;
 
     final dataPath = '${Directory.current.path}/test/data/';
