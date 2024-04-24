@@ -1,3 +1,9 @@
+## 0.1.3
+
+* Added tesseract API to extract text from a multi-page tiff document.
+* Fixed issue where page segment mode value was being ignored.
+* Default page segment mode to `PageSegMode.auto`.
+
 ## 0.1.2
 
 * Fixed error in script in podspec files for MacOS and iOS.
